@@ -31,11 +31,9 @@ class Push7 {
       ?>
         <div class='update-nag is-dismissible'><p>
           <?php printf(
-          __( 'Push7のダッシュボードにある自動プッシュ設定から、必要なAPPNOとAPIKEYを取得し%sから記入して下さい。','push7' ),
-          sprintf( '<a href="%s">%s</a>', self::admin_url(), __( 'こちら', 'push7' ))
-        );
-        ?>
-
+            __( 'Push7のダッシュボードにある自動プッシュ設定から、必要なAPPNOとAPIKEYを取得し%sから記入して下さい。','push7' ),
+            sprintf( '<a href="%s">%s</a>', self::admin_url(), __( 'こちら', 'push7' ))
+          ); ?>
         </p></div>
       <?php
     }
@@ -161,7 +159,4 @@ class Push7 {
     $args = array( 'page' => 'push7' );
     return add_query_arg( $args ,  admin_url( 'options-general.php' ));
   }
-
-
-
 }
