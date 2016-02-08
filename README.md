@@ -1,5 +1,5 @@
 === Push7 ===
-Contributors: GNEX Ltd.
+Contributors: gnexltd
 Tags: Chrome, Chrome Notifications, Android, Safari, push, push notifications, web push notifications, web push, plugin, admin, posts, page, links, widget, ajax, social, wordpress, dashboard, news, notifications, services, desktop notifications, mobile notifications, apple, google, Firefox, new post, osx, mac, Chrome OS
 Requires at least: 4.4.1
 Tested up to: 4.4.1
