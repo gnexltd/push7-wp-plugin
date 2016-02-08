@@ -42,7 +42,8 @@ class Push7 {
   public function push_post($new_status, $old_status, $postData) {
     if (isset($_POST['push7_is_notify']) && $_POST['push7_is_notify'] == 'true') {
       if($new_status != 'publish') return;
-      $blogname = get_option ( empty ( get_option('push7_blog_title', '') ) ? "blogname" : "push7_blog_title" );
+      // emptyを使うとWP提出時rejectされるので使用しないように
+      $blogname = get_option ( get_option('push7_blog_title', '') == '' ? "blogname" : "push7_blog_title" );
       $appno = get_option( 'push7_appno', '' );
       $apikey = get_option( 'push7_apikey', '' );
       $app_head = $this->get_app_head($appno);
