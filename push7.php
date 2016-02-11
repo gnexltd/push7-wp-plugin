@@ -16,10 +16,6 @@ class Push7 {
 
   const API_URL = 'https://dashboard.push7.jp/api/v1/';
   const VERSION = '1.1.1';
-  const X_HEADERS = array(
-    'X-Push7' => 'WordPress Plugin '.self::VERSION,
-    'X-Push7-Appno' => get_option('push7_appno')
-  )
 
   public function __construct() {
     session_start();
@@ -58,7 +54,7 @@ class Push7 {
         'title' => $blogname,
         'body' => $postData->post_title,
         'icon' => $icon_url,
-        'url' => get_permalink($postData->ID),
+        'url' => get_permalink($postData),
         'apikey' => $apikey
       );
 
@@ -70,7 +66,7 @@ class Push7 {
         self::API_URL . $appno.'/send',
         array(
           'method' => 'POST',
-          'headers' => $headers + self::X_HEADERS,
+          'headers' => $headers + self::x_headers(),
           'body' => json_encode($data)
         )
       );
@@ -90,7 +86,7 @@ class Push7 {
     $responce = json_decode(wp_remote_get(
       self::API_URL.$appno.'/head',
       array(
-        'headers' => self::X_HEADERS
+        'headers' => self::x_headers()
       )
     )["body"]);
     return $responce;
@@ -169,5 +165,12 @@ class Push7 {
   public static function admin_url () {
     $args = array( 'page' => 'push7' );
     return add_query_arg( $args ,  admin_url( 'options-general.php' ));
+  }
+
+  public static function x_headers() {
+    return array(
+      'X-Push7' => 'WordPress Plugin '.self::VERSION,
+      'X-Push7-Appno' => get_option( 'push7_appno', '' )
+    );
   }
 }
