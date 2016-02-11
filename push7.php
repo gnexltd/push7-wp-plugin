@@ -15,6 +15,11 @@ new Push7();
 class Push7 {
 
   const API_URL = 'https://dashboard.push7.jp/api/v1/';
+  const VERSION = '1.1.1';
+  const X_HEADERS = array(
+    'X-Push7' => 'WordPress Plugin '.self::VERSION,
+    'X-Push7-Appno' => get_option('push7_appno')
+  )
 
   public function __construct() {
     session_start();
@@ -53,19 +58,19 @@ class Push7 {
         'title' => $blogname,
         'body' => $postData->post_title,
         'icon' => $icon_url,
-        'url' => $postData->guid,
+        'url' => get_permalink($postData->ID),
         'apikey' => $apikey
       );
 
       $headers =  array(
-        'Content-Type' => 'application/json'
+        'Content-Type' => 'application/json',
       );
 
       $responce = wp_remote_post(
         self::API_URL . $appno.'/send',
         array(
           'method' => 'POST',
-          'headers' => $headers,
+          'headers' => $headers + self::X_HEADERS,
           'body' => json_encode($data)
         )
       );
@@ -82,7 +87,12 @@ class Push7 {
   }
 
   public function get_app_head($appno) {
-    $responce = json_decode(wp_remote_get( self::API_URL . $appno . '/head' )["body"]);
+    $responce = json_decode(wp_remote_get(
+      self::API_URL.$appno.'/head',
+      array(
+        'headers' => self::X_HEADERS
+      )
+    )["body"]);
     return $responce;
   }
 
@@ -142,18 +152,18 @@ class Push7 {
   }
 
   public static function check_postType(){
-      global $post;
-      switch ($post->post_status) {
-        // 新規投稿時
-        case 'auto-draft':
-          return get_option("push7_push_default_on_new");
-        // 記事更新時
-        case 'publish':
-          return get_option("push7_push_default_on_update");
-        case 'draft':
-          return get_option("push7_push_default_on_update");
-      }
+    global $post;
+    switch ($post->post_status) {
+      // 新規投稿時
+      case 'auto-draft':
+        return get_option("push7_push_default_on_new");
+      // 記事更新時
+      case 'publish':
+        return get_option("push7_push_default_on_update");
+      case 'draft':
+        return get_option("push7_push_default_on_update");
     }
+  }
 
 
   public static function admin_url () {
