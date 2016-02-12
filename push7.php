@@ -43,12 +43,13 @@ class Push7 {
   public function push_post($new_status, $old_status, $postData) {
     if (isset($_POST['push7_is_notify']) && $_POST['push7_is_notify'] == 'true') {
       if($new_status != 'publish') return;
-      // emptyを使うとWP提出時rejectされるので使用しないように
+      // emptyに式を渡すとWP提出時rejectされるので使用しないように
       $blogname = get_option ( get_option('push7_blog_title', '') == '' ? "blogname" : "push7_blog_title" );
       $appno = get_option( 'push7_appno', '' );
       $apikey = get_option( 'push7_apikey', '' );
       $app_head = $this->get_app_head($appno);
       $icon_url = $app_head->icon;
+      if( ($appno === '') || ($apikey === '') ) return;
 
       $data = array(
         'title' => $blogname,
