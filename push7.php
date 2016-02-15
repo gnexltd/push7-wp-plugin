@@ -89,8 +89,8 @@ class Push7 {
       array(
         'headers' => self::x_headers()
       )
-    )["body"]);
-    return $responce;
+    ));
+    return $responce["body"];
   }
 
   public function check_push_success(){
