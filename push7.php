@@ -84,13 +84,13 @@ class Push7 {
   }
 
   public function get_app_head($appno) {
-    $responce = json_decode(wp_remote_get(
+    $responce = wp_remote_get(
       self::API_URL.$appno.'/head',
       array(
         'headers' => self::x_headers()
       )
-    ));
-    return $responce["body"];
+    );
+    return json_decode( $responce[ 'body' ] );
   }
 
   public function check_push_success(){
