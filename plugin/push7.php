@@ -14,8 +14,8 @@ new Push7();
 
 class Push7 {
 
-  const API_URL = 'https://dashboard.push7.jp/api/v1/';
-  const VERSION = '1.1.1';
+  const API_URL = 'https://api.push7.jp/api/v1/';
+  const VERSION = '1.2.0';
 
   public function __construct() {
     session_start();
