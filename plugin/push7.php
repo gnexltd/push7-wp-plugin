@@ -48,7 +48,14 @@ class Push7 {
       $appno = get_option( 'push7_appno', '' );
       $apikey = get_option( 'push7_apikey', '' );
       if(empty($appno) || empty($apikey)) return; //Validation
-      $app_head = $this->get_app_head($appno);
+
+      $app_head_responce = $this->get_app_head($appno);
+      if (is_wp_error($app_head_responce)) {
+        $_SESSION['error_message'] = $app_head_responce->get_error_message();
+        return;
+      } else {
+        $app_head = json_decode($app_head_responce['body']);
+      }
       $icon_url = $app_head->icon;
 
       $data = array(
@@ -68,7 +75,8 @@ class Push7 {
         array(
           'method' => 'POST',
           'headers' => $headers + self::x_headers(),
-          'body' => json_encode($data)
+          'body' => json_encode($data),
+          'sslverify' => false
         )
       );
       $message = json_decode($responce['body']);
@@ -87,10 +95,11 @@ class Push7 {
     $responce = wp_remote_get(
       self::API_URL.$appno.'/head',
       array(
-        'headers' => self::x_headers()
+        'headers' => self::x_headers(),
+        'sslverify' => false
       )
     );
-    return json_decode( $responce[ 'body' ] );
+    return $responce;
   }
 
   public function check_push_success(){
