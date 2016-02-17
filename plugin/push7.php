@@ -47,9 +47,9 @@ class Push7 {
       $blogname = get_option ( get_option('push7_blog_title', '') == '' ? "blogname" : "push7_blog_title" );
       $appno = get_option( 'push7_appno', '' );
       $apikey = get_option( 'push7_apikey', '' );
+      if(empty($appno) || empty($apikey)) return; //Validation
       $app_head = $this->get_app_head($appno);
       $icon_url = $app_head->icon;
-      if( ($appno === '') || ($apikey === '') ) return;
 
       $data = array(
         'title' => $blogname,
