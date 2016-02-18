@@ -72,6 +72,22 @@
             </fieldset>
           </td>
         </tr>
+
+        <tr>
+          <th><?php _e( 'SSLの検証を無効化する', 'push7' ); ?></th>
+          <td>
+            <fieldset>
+              <label title="true">
+                <input type="radio" name="push7_sslverify_disabled" value="true" <?php checked("true", get_option("push7_sslverify_disabled")); ?>>
+                <?php _e( 'する(必要のない場合には選択しないでください。)', 'push7' ); ?>
+              </label>
+              <label title="false">
+                <input type="radio" name="push7_sslverify_disabled" value="false" <?php checked("false", get_option("push7_sslverify_disabled")); ?>>
+                <?php _e( 'しない', 'push7' ); ?>
+              </label>
+            </fieldset>
+          </td>
+        </tr>
       </tbody>
     </table>
 

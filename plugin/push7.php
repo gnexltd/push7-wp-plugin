@@ -51,7 +51,14 @@ class Push7 {
 
       $app_head_responce = $this->get_app_head($appno);
       if (is_wp_error($app_head_responce)) {
-        $_SESSION['error_message'] = $app_head_responce->get_error_message();
+        $message = $app_head_responce->get_error_message();
+        if (strpos($message, 'SSL certificate problem') !== false) {
+          $message =
+            'SSLの検証がpush通知を阻害している可能性があります。'
+            .sprintf('<a href="%s">%s</a>', self::admin_url(), __( '管理画面', 'push7' ))
+            .'よりSSLの検証を無効化していただくことで対処できる可能性があります。';
+        }
+        $_SESSION['error_message'] = $message;
         return;
       } else {
         $app_head = json_decode($app_head_responce['body']);
@@ -76,7 +83,7 @@ class Push7 {
           'method' => 'POST',
           'headers' => $headers + self::x_headers(),
           'body' => json_encode($data),
-          'sslverify' => false
+          'sslverify' => self::sslverify()
         )
       );
       $message = json_decode($responce['body']);
@@ -96,7 +103,7 @@ class Push7 {
       self::API_URL.$appno.'/head',
       array(
         'headers' => self::x_headers(),
-        'sslverify' => false
+        'sslverify' => self::sslverify()
       )
     );
     return $responce;
@@ -118,9 +125,11 @@ class Push7 {
     register_setting('push7-settings-group', 'push7_apikey');
     register_setting('push7-settings-group', 'push7_push_default_on_new');
     register_setting('push7-settings-group', 'push7_push_default_on_update');
+    register_setting('push7-settings-group', 'push7_sslverify_disabled');
     // 初期値の設定
     if(!get_option("push7_push_default_on_new")) update_option("push7_push_default_on_new", "true");
     if(!get_option("push7_push_default_on_update")) update_option("push7_push_default_on_update", "true");
+    if(!get_option("push7_sslverify_disabled")) update_option("push7_sslverify_disabled", "false");
 
     load_plugin_textdomain( 'push7', null, dirname(__FILE__) . '/languages' );
   }
@@ -171,7 +180,6 @@ class Push7 {
     }
   }
 
-
   public static function admin_url () {
     $args = array( 'page' => 'push7' );
     return add_query_arg( $args ,  admin_url( 'options-general.php' ));
@@ -182,5 +190,9 @@ class Push7 {
       'X-Push7' => 'WordPress Plugin '.self::VERSION,
       'X-Push7-Appno' => get_option( 'push7_appno', '' )
     );
+  }
+
+  public static function sslverify() {
+    return get_option('push7_sslverify_disabled') === 'false' ? true : false;
   }
 }
