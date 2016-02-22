@@ -2,8 +2,8 @@
 Push7 is Web Push Notification Service for your website.
 <https://push7.jp>
 
-Now available for Chrome(Android and desktop).
-We will soon support Safari, Firefox, Opera and other platforms.
+Now available for Android, Chrome and Firefox.
+We will soon support Safari, iOS and other platforms.
 
 ### Requires WordPress version.
 * Requires at least: 4.0

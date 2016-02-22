@@ -8,8 +8,8 @@ License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Web Push Notification Service for your website.
-Now available for Chrome(Android and desktop).
-We will soon support Safari, Firefox, Opera and other platforms.
+Now available for Android, Chrome and Firefox.
+We will soon support Safari, iOS and other platforms.
 
 == Description ==
 
