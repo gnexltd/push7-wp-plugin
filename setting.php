@@ -49,6 +49,7 @@
                 <input type="radio" name="push7_push_default_on_new" value="true" <?php checked("true", get_option("push7_push_default_on_new")); ?>>
                 <?php _e( 'する', 'push7' ); ?>
               </label>
+              <br>
               <label title="false">
                 <input type="radio" name="push7_push_default_on_new" value="false" <?php checked("false", get_option("ppush7_ush_default_on_new")); ?>>
                 <?php _e( 'しない', 'push7' ); ?>
@@ -65,6 +66,7 @@
                 <input type="radio" name="push7_push_default_on_update" value="true" <?php checked("true", get_option("push7_push_default_on_update")); ?>>
                 <?php _e( 'する', 'push7' ); ?>
               </label>
+              <br>
               <label title="false">
                 <input type="radio" name="push7_push_default_on_update" value="false" <?php checked("false", get_option("push7_push_default_on_update")); ?>>
                 <?php _e( 'しない', 'push7' ); ?>
@@ -81,6 +83,7 @@
                 <input type="radio" name="push7_sslverify_disabled" value="true" <?php checked("true", get_option("push7_sslverify_disabled")); ?>>
                 <?php _e( 'する(必要のない場合には選択しないでください。)', 'push7' ); ?>
               </label>
+              <br>
               <label title="false">
                 <input type="radio" name="push7_sslverify_disabled" value="false" <?php checked("false", get_option("push7_sslverify_disabled")); ?>>
                 <?php _e( 'しない', 'push7' ); ?>
