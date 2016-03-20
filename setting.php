@@ -42,16 +42,20 @@
         </tr>
 
         <tr>
-          <th><?php _e( '新規記事をデフォルトでプッシュ通知する', 'push7' ); ?></th>
+          <th>
+            <label for="push7_push_post_on_new">
+              <?php _e( '新規記事をデフォルトでプッシュ通知する', 'push7' ); ?>
+            </label>
+          </th>
           <td>
             <fieldset>
               <label title="true">
-                <input type="radio" name="push7_push_default_on_new" value="true" <?php checked("true", get_option("push7_push_default_on_new")); ?>>
+                <input type="radio" name="push7_push_post_on_new" value="true" <?php checked("true", get_option("push7_push_post_on_new")); ?>>
                 <?php _e( 'する', 'push7' ); ?>
               </label>
               <br>
               <label title="false">
-                <input type="radio" name="push7_push_default_on_new" value="false" <?php checked("false", get_option("ppush7_ush_default_on_new")); ?>>
+                <input type="radio" name="push7_push_post_on_new" value="false" <?php checked("false", get_option("ppush7_ush_post_on_new")); ?>>
                 <?php _e( 'しない', 'push7' ); ?>
               </label>
             </fieldset>
@@ -59,16 +63,20 @@
         </tr>
 
         <tr>
-          <th><?php _e( '更新記事をデフォルトでプッシュ通知する', 'push7' ); ?></th>
+          <th>
+            <label for="push7_push_post_on_update">
+              <?php _e( '更新記事をデフォルトでプッシュ通知する', 'push7' ); ?>
+            </label>
+          </th>
           <td>
             <fieldset>
               <label title="true">
-                <input type="radio" name="push7_push_default_on_update" value="true" <?php checked("true", get_option("push7_push_default_on_update")); ?>>
+                <input type="radio" name="push7_push_post_on_update" value="true" <?php checked("true", get_option("push7_push_post_on_update")); ?>>
                 <?php _e( 'する', 'push7' ); ?>
               </label>
               <br>
               <label title="false">
-                <input type="radio" name="push7_push_default_on_update" value="false" <?php checked("false", get_option("push7_push_default_on_update")); ?>>
+                <input type="radio" name="push7_push_post_on_update" value="false" <?php checked("false", get_option("push7_push_post_on_update")); ?>>
                 <?php _e( 'しない', 'push7' ); ?>
               </label>
             </fieldset>
@@ -76,7 +84,11 @@
         </tr>
 
         <tr>
-          <th><?php _e( 'SSLの検証を無効化する', 'push7' ); ?></th>
+          <th>
+            <label for="push7_sslverify_disabled">
+              <?php _e( 'SSLの検証を無効化する', 'push7' ); ?>
+            </label>
+          </th>
           <td>
             <fieldset>
               <label title="true">
@@ -92,6 +104,58 @@
           </td>
         </tr>
       </tbody>
+    </table>
+
+    <h2 class="title">カスタム投稿タイプ毎の設定</h2>
+
+    <table class="form-table">
+      <?php
+        $post_types = get_post_types(array('_builtin' => false));
+        foreach ($post_types as $post_type) {
+          $cpt_on_new = "push7_push_".$post_type."_on_new";
+          $cpt_on_update = "push7_push_".$post_type."_on_update";
+          ?>
+            <br>
+            <h3 class><?php echo $post_type; ?></h3>
+            <tbody>
+              <tr>
+                <th>
+                  <label for="<?php echo $cpt_on_new; ?>">新規記事をデフォルトでプッシュ通知する</label>
+                </th>
+                <td>
+                  <fieldset>
+                    <label title="true">
+                      <input type="radio" name="<?php echo $cpt_on_new; ?>" value="true" <?php checked("true", get_option($cpt_on_new)); ?>>
+                      <?php _e( 'する', 'push7' ); ?>
+                    </label>
+                    <br>
+                    <label title="false">
+                      <input type="radio" name="<?php echo $cpt_on_new; ?>" value="false" <?php checked("false", get_option($cpt_on_new)); ?>>
+                      <?php _e( 'しない', 'push7' ); ?>
+                    </label>
+                  </fieldset>
+                </td>
+                <th>
+                  <label for="<?php echo $cpt_on_update; ?>">更新記事をデフォルトでプッシュ通知する</label>
+                </th>
+                <td>
+                  <fieldset>
+                    <label title="true">
+                      <input type="radio" name="<?php echo $cpt_on_update; ?>" value="true" <?php checked("true", get_option($cpt_on_update)); ?>>
+                      <?php _e( 'する', 'push7' ); ?>
+                    </label>
+                    <br>
+                    <label title="false">
+                      <input type="radio" name="<?php echo $cpt_on_update; ?>" value="false" <?php checked("false", get_option($cpt_on_update)); ?>>
+                      <?php _e( 'しない', 'push7' ); ?>
+                    </label>
+                  </fieldset>
+                </td>
+              </tr>
+            </tbody>
+          <?php
+        }
+      ?>
     </table>
 
     <?php submit_button(); ?>

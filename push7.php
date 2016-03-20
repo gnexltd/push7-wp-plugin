@@ -175,15 +175,16 @@ class Push7 {
 
   public static function check_postType(){
     global $post;
+    $post_type = get_post_type($post);
     switch ($post->post_status) {
       // 新規投稿時
       case 'auto-draft':
-        return get_option("push7_push_default_on_new");
+        return get_option("push7_push_".$post_type."_on_new");
       // 記事更新時
       case 'publish':
-        return get_option("push7_push_default_on_update");
+        return get_option("push7_push_".$post_type."_on_update");
       case 'draft':
-        return get_option("push7_push_default_on_update");
+        return get_option("push7_push_".$post_type."_on_update");
     }
   }
 
