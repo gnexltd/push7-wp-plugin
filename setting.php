@@ -106,17 +106,16 @@
       </tbody>
     </table>
 
-    <h2 class="title">カスタム投稿タイプ毎の設定</h2>
+    <h2 class="title">カテゴリ毎のプッシュ通知のデフォルト値</h2>
 
-    <table class="form-table">
-      <?php
-        $post_types = get_post_types(array('_builtin' => false));
-        foreach ($post_types as $post_type) {
-          $cpt_on_new = "push7_push_".$post_type."_on_new";
-          $cpt_on_update = "push7_push_".$post_type."_on_update";
-          ?>
-            <br>
-            <h3 class><?php echo $post_type; ?></h3>
+    <?php
+      $post_types = get_post_types(array('_builtin' => false));
+      foreach ($post_types as $post_type) {
+        $cpt_on_new = "push7_push_".$post_type."_on_new";
+        $cpt_on_update = "push7_push_".$post_type."_on_update";
+        ?>
+          <h3 class="title"><?php echo $post_type; ?></h3>
+          <table class="form-table">
             <tbody>
               <tr>
                 <th>
@@ -153,10 +152,10 @@
                 </td>
               </tr>
             </tbody>
-          <?php
-        }
-      ?>
-    </table>
+          </table>
+        <?php
+      }
+    ?>
 
     <?php submit_button(); ?>
   </form>
