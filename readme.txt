@@ -24,6 +24,9 @@ Push7 is now available for Chrome(Android and desktop).
 1. Open the settings menu, input your APPNO and APIKEY.
 
 == Changelog ==
+= 1.4 =
+* 2016-3-29 カテゴリ、カスタム投稿タイプ毎に新規投稿時・更新時のプッシュ通知有無を設定できるオプションの追加。
+
 = 1.3 =
 * 2016-2-18 PHP5.3における動作しないバグの訂正およびSSLの検証を無効化するオプションの追加
 
