@@ -3,7 +3,7 @@
 Plugin Name: Push7
 Plugin URI: https://push7.jp/
 Description: Push7 plugin for WordPress
-Version: 1.3
+Version: 1.4
 Author: GNEX Ltd.
 Author URI: https://globalnet-ex.com
 License:GPLv2 or later
@@ -41,10 +41,10 @@ class Push7 {
   }
 
   public function push_post($new_status, $old_status, $postData) {
-    if (isset($_POST['push7_is_notify']) && $_POST['push7_is_notify'] == 'true') {
+    if (isset($_POST['push7_is_notify']) && $_POST['push7_is_notify'] === 'true') {
       if($new_status != 'publish') return;
       // emptyに式を渡すとWP提出時rejectされるので使用しないように
-      $blogname = get_option ( get_option('push7_blog_title', '') == '' ? "blogname" : "push7_blog_title" );
+      $blogname = get_option ( get_option('push7_blog_title', '') === '' ? "blogname" : "push7_blog_title" );
       $appno = get_option( 'push7_appno', '' );
       $apikey = get_option( 'push7_apikey', '' );
       if(empty($appno) || empty($apikey)) return; //Validation
@@ -203,12 +203,12 @@ class Push7 {
     $flag = true;
     $categories = get_the_category($post);
     foreach ($categories as $category) {
-      if (self::get_push_config("ctg", $category->slug) == "false") {
+      if (self::get_push_config("ctg", $category->slug) === "false") {
         $flag = false;
         break;
       }
     }
-    if (self::get_push_config("pt", get_post_type($post)) == "false") $flag = false;
+    if (self::get_push_config("pt", get_post_type($post)) === "false") $flag = false;
     return $flag ? "true" : "false";
   }
 
