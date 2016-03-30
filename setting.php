@@ -77,6 +77,7 @@
             <input type="checkbox" name="<?php echo $new;?>" value="true" <?php checked("true", get_option($new)) ?>>
             <?php echo self::disp_post_type($post_type); ?>
           </label>
+          <br>
       <?php
         }
       ?>
@@ -94,6 +95,7 @@
             <input type="checkbox" name="<?php echo $update;?>" value="true" <?php checked("true", get_option($update)) ?>>
             <?php echo self::disp_post_type($post_type); ?>
           </label>
+          <br>
       <?php
         }
       ?>
@@ -113,18 +115,18 @@
           <tr>
             <th>新規投稿時自動プッシュする</th>
             <td>
-      <?php
-        foreach ($categories as $category) {
-          $new = "push7_push_ctg_".$category->slug."_on_new";
-      ?>
-            <label for="<?php echo $new; ?>">
-              <input type="checkbox" name="<?php echo $new; ?>" value="true" <?php checked("true", get_option($new)) ?>>
-              <?php echo $category->name; ?>
-            </label>
-            <br>
-      <?php
-        }
-      ?>
+        <?php
+          foreach ($categories as $category) {
+            $new = "push7_push_ctg_".$category->slug."_on_new";
+        ?>
+              <label for="<?php echo $new; ?>">
+                <input type="checkbox" name="<?php echo $new; ?>" value="true" <?php checked("true", get_option($new)) ?>>
+                <?php echo $category->name; ?>
+              </label>
+              <br>
+        <?php
+          }
+        ?>
             </td>
           </tr>
 
@@ -133,18 +135,18 @@
               <label>更新時自動プッシュする</label>
             </th>
             <td>
-              <?php
-                foreach ($categories as $category) {
-                  $update = "push7_push_ctg_".$category->slug."_on_update";
-              ?>
-                    <label for="<?php echo $update; ?>">
-                      <input type="checkbox" name="<?php echo $update; ?>" value="true" <?php checked("true", get_option($update)) ?>>
-                      <?php echo $category->name; ?>
-                    </label>
-                    <br>
-              <?php
-                }
-              ?>
+        <?php
+          foreach ($categories as $category) {
+            $update = "push7_push_ctg_".$category->slug."_on_update";
+        ?>
+              <label for="<?php echo $update; ?>">
+                <input type="checkbox" name="<?php echo $update; ?>" value="true" <?php checked("true", get_option($update)) ?>>
+                <?php echo $category->name; ?>
+              </label>
+              <br>
+        <?php
+          }
+        ?>
             </td>
           </tr>
         </tbody></table>
