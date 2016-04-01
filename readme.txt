@@ -3,13 +3,13 @@ Contributors: gnexltd
 Tags: Chrome, Chrome Notifications, Android, Safari, push, push notifications, web push notifications, web push, plugin, admin, posts, page, links, widget, ajax, social, wordpress, dashboard, news, notifications, services, desktop notifications, mobile notifications, apple, google, Firefox, new post, osx, mac, Chrome OS
 Requires at least: 4.0
 Tested up to: 4.4.1
-Stable tag: 1.4
+Stable tag: 1.4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Web Push Notification Service for your website.
-Now available for Android, Chrome and Firefox.
-We will soon support Safari, iOS and other platforms.
+Now available for Android, iOS, Chrome and Firefox.
+We will soon support Safari and other platforms.
 
 == Description ==
 
@@ -24,6 +24,9 @@ Push7 is now available for Chrome(Android and desktop).
 1. Open the settings menu, input your APPNO and APIKEY.
 
 == Changelog ==
+= 1.4.1 =
+* 2016-3-29 migrate.phpの追加によるバグ訂正。
+
 = 1.4 =
 * 2016-3-29 カテゴリ、カスタム投稿タイプ毎に新規投稿時・更新時のプッシュ通知有無を設定できるオプションの追加。
 
