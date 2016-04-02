@@ -25,6 +25,9 @@ Push7 is now available for Chrome(Android and desktop).
 
 == Changelog ==
 = 1.4.2 =
+* 2016-4-2 設定項目の変更及び動作の安定性を向上
+
+= 1.4.1 =
 * 2016-3-30 設定ページの軽微な修正
 
 = 1.4 =
