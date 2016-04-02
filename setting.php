@@ -64,50 +64,8 @@
       </tbody>
     </table>
 
-    <h2 class="title">投稿タイプ毎のプッシュ通知設定</h2>
-    <table class="form-table"><tbody>
-      <tr>
-        <th>新規投稿時自動プッシュする</th>
-        <td>
-      <?php
-        foreach (self::post_types() as $post_type) {
-          $new = "push7_push_pt_".$post_type."_on_new";
-      ?>
-          <label for="<?php echo $new; ?>">
-            <input type="checkbox" name="<?php echo $new;?>" value="true" <?php checked("true", get_option($new)) ?>>
-            <?php echo self::disp_post_type($post_type); ?>
-          </label>
-          <br>
-      <?php
-        }
-      ?>
-        </td>
-      </tr>
-
-      <tr>
-        <th>更新時自動プッシュする</th>
-        <td>
-      <?php
-        foreach (self::post_types() as $post_type) {
-          $update = "push7_push_pt_".$post_type."_on_update";
-      ?>
-          <label for="<?php echo $update; ?>">
-            <input type="checkbox" name="<?php echo $update;?>" value="true" <?php checked("true", get_option($update)) ?>>
-            <?php echo self::disp_post_type($post_type); ?>
-          </label>
-          <br>
-      <?php
-        }
-      ?>
-        </td>
-      </tr>
-    </tbody></table>
-
     <?php
-      $categories = get_categories(array(
-        // Uncategorizedを除外
-        'exclude' => '1'
-      ));
+      $categories = get_categories();
       if (count($categories) !== 0) {
       ?>
         <h2 class="title">カテゴリ毎のプッシュ通知設定</h2>
@@ -117,30 +75,10 @@
             <td>
         <?php
           foreach ($categories as $category) {
-            $new = "push7_push_ctg_".$category->slug."_on_new";
+            $name = "push7_push_ctg_".$category->name;
         ?>
-              <label for="<?php echo $new; ?>">
-                <input type="checkbox" name="<?php echo $new; ?>" value="true" <?php checked("true", get_option($new)) ?>>
-                <?php echo $category->name; ?>
-              </label>
-              <br>
-        <?php
-          }
-        ?>
-            </td>
-          </tr>
-
-          <tr>
-            <th>
-              <label>更新時自動プッシュする</label>
-            </th>
-            <td>
-        <?php
-          foreach ($categories as $category) {
-            $update = "push7_push_ctg_".$category->slug."_on_update";
-        ?>
-              <label for="<?php echo $update; ?>">
-                <input type="checkbox" name="<?php echo $update; ?>" value="true" <?php checked("true", get_option($update)) ?>>
+              <label for="<?php echo $name; ?>">
+                <input type="checkbox" name="<?php echo $name; ?>" value="true" <?php checked("true", get_option($name)) ?>>
                 <?php echo $category->name; ?>
               </label>
               <br>
@@ -153,6 +91,27 @@
       <?php
       }
     ?>
+
+    <h2 class="title">投稿タイプ毎のプッシュ通知設定</h2>
+    <table class="form-table"><tbody>
+      <tr>
+        <th>新規投稿時自動プッシュする</th>
+        <td>
+      <?php
+        foreach (self::post_types() as $post_type) {
+          $name = "push7_push_pt_".$post_type;
+      ?>
+          <label for="<?php echo $name; ?>">
+            <input type="checkbox" name="<?php echo $name;?>" value="true" <?php checked("true", get_option($name)) ?>>
+            <?php echo self::disp_post_type($post_type); ?>
+          </label>
+          <br>
+      <?php
+        }
+      ?>
+        </td>
+      </tr>
+    </tbody></table>
 
     <?php submit_button(); ?>
   </form>

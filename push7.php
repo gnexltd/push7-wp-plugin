@@ -18,7 +18,6 @@ class Push7 {
   const VERSION = '1.4.2';
 
   public function __construct() {
-    session_start();
     add_action('transition_post_status', array($this, 'push_post'), 10, 3);
     add_action('admin_menu', array($this, 'admin_menu'));
     add_action('admin_menu', array($this, 'metabox'));
@@ -41,60 +40,83 @@ class Push7 {
   }
 
   public function push_post($new_status, $old_status, $postData) {
-    if (isset($_POST['push7_is_notify']) && $_POST['push7_is_notify'] === 'true') {
-      if($new_status != 'publish') return;
-      // emptyに式を渡すとWP提出時rejectされるので使用しないように
-      $blogname = get_option ( get_option('push7_blog_title', '') === '' ? "blogname" : "push7_blog_title" );
-      $appno = get_option( 'push7_appno', '' );
-      $apikey = get_option( 'push7_apikey', '' );
-      if(empty($appno) || empty($apikey)) return; //Validation
+    // new_statusが公開済みでなければpush通知しない
+    if($new_status != 'publish') return;
 
-      $app_head_responce = $this->get_app_head($appno);
-      if (is_wp_error($app_head_responce)) {
-        $message = $app_head_responce->get_error_message();
-        if (strpos($message, 'SSL certificate problem') !== false) {
-          $message =
-            'SSLの検証がpush通知を阻害している可能性があります。'
-            .sprintf('<a href="%s">%s</a>', self::admin_url(), __( '管理画面', 'push7' ))
-            .'よりSSLの検証を無効化していただくことで対処できる可能性があります。';
+    // metaboxが存在する場合
+    if (!empty($_POST['metabox_exist'])) {
+      // 「通知しない」にチェックが入っている場合、push通知しない
+      if (!empty($_POST['push7_not_notify'])) return;
+
+      foreach (get_the_category($post) as $category) {
+        if (get_option("push7_push_ctg_".$category->name) !== "true") {
+          $_SESSION['error_message'] =
+            'カテゴリー:"'
+            .$category->name
+            .'"の「投稿時自動プッシュする」の設定が無効になっていたので、プッシュ通知は送信されませんでした。もしプッシュ通知を送信したい場合'
+            .sprintf('<a href="%s" target="_blank">%s</a>', 'https://dashboard.push7.jp/u/d/', 'こちら')
+            .'より手動で送信をお願いします。';
+          return;
         }
-        $_SESSION['error_message'] = $message;
-        return;
-      } else {
-        $app_head = json_decode($app_head_responce['body']);
       }
-      $icon_url = $app_head->icon;
 
-      $data = array(
-        'title' => $blogname,
-        'body' => $postData->post_title,
-        'icon' => $icon_url,
-        'url' => get_permalink($postData),
-        'apikey' => $apikey
-      );
+    // metaboxが存在しない(API経由,サードパーティのクライアント経由での投稿の場合)
+    } else {
+      // 設定を読み、falseならばpush通知しない
+      if ($this->push_default_config() === 'false') return;
+    }
 
-      $headers =  array(
-        'Content-Type' => 'application/json',
-      );
+    // emptyに式を渡すとWP提出時rejectされるので使用しないように
+    $blogname = get_option ( get_option('push7_blog_title', '') === '' ? "blogname" : "push7_blog_title" );
+    $appno = get_option( 'push7_appno', '' );
+    $apikey = get_option( 'push7_apikey', '' );
+    if(empty($appno) || empty($apikey)) return; //Validation
 
-      $responce = wp_remote_post(
-        self::API_URL . $appno.'/send',
-        array(
-          'method' => 'POST',
-          'headers' => $headers + self::x_headers(),
-          'body' => json_encode($data),
-          'sslverify' => self::sslverify()
-        )
-      );
-      $message = json_decode($responce['body']);
-
-      if (is_wp_error($responce)) {
-        $_SESSION['error_message'] = $responce->get_error_message();
-      } else if (isset($message->success)) {
-        $_SESSION['success_message'] = $message->success;
-      } else if (isset($message->error)) {
-        $_SESSION['error_message'] = $message->error;
+    $app_head_responce = $this->get_app_head($appno);
+    if (is_wp_error($app_head_responce)) {
+      $message = $app_head_responce->get_error_message();
+      if (strpos($message, 'SSL certificate problem') !== false) {
+        $message =
+          'SSLの検証がpush通知を阻害している可能性があります。'
+          .sprintf('<a href="%s">%s</a>', self::admin_url(), __( '管理画面', 'push7' ))
+          .'よりSSLの検証を無効化していただくことで対処できる可能性があります。';
       }
+      $_SESSION['error_message'] = $message;
+      return;
+    } else {
+      $app_head = json_decode($app_head_responce['body']);
+    }
+    $icon_url = $app_head->icon;
+
+    $data = array(
+      'title' => $blogname,
+      'body' => $postData->post_title,
+      'icon' => $icon_url,
+      'url' => get_permalink($postData),
+      'apikey' => $apikey
+    );
+
+    $headers =  array(
+      'Content-Type' => 'application/json',
+    );
+
+    $responce = wp_remote_post(
+      self::API_URL . $appno.'/send',
+      array(
+        'method' => 'POST',
+        'headers' => $headers + self::x_headers(),
+        'body' => json_encode($data),
+        'sslverify' => self::sslverify()
+      )
+    );
+    $message = json_decode($responce['body']);
+
+    if (is_wp_error($responce)) {
+      $_SESSION['error_message'] = $responce->get_error_message();
+    } else if (isset($message->error)) {
+      $_SESSION['error_message'] = $message->error;
+    } else {
+      $_SESSION['success'] = '1';
     }
   }
 
@@ -110,9 +132,9 @@ class Push7 {
   }
 
   public function check_push_success(){
-    if (isset($_SESSION['success_message'])){
-      ?><div class="notice-success is-dismissible"><p>Push7: <?php _e( '通知は正常に配信されました', 'push7' );?></p></div><?php
-      unset($_SESSION['success_message']);
+    if (isset($_SESSION['success'])){
+      ?><div class="notice notice-success is-dismissible"><p>Push7: <?php _e( '通知は正常に配信されました', 'push7' );?></p></div><?php
+      unset($_SESSION['success']);
     } elseif (isset($_SESSION['error_message'])) {
       ?><div class="error is-dismissible"><p>Push7 Error: <?php echo $_SESSION['error_message'] ?></p></div><?php
       unset($_SESSION['error_message']);
@@ -120,30 +142,24 @@ class Push7 {
   }
 
   public function page_init() {
-    include 'migrate.php';
+    session_start();
     register_setting('push7-settings-group', 'push7_blog_title');
     register_setting('push7-settings-group', 'push7_appno');
     register_setting('push7-settings-group', 'push7_apikey');
     register_setting('push7-settings-group', 'push7_sslverify_disabled');
 
     // カテゴリ設定
-    foreach (get_categories(array('exclude' => '1')) as $category) {
-      $new = "push7_push_ctg_".$category->slug."_on_new";
-      $update = "push7_push_ctg_".$category->slug."_on_update";
-      register_setting('push7-settings-group', $new);
-      register_setting('push7-settings-group', $update);
-      if(!(get_option($new))) update_option($new, "false");
-      if(!get_option($update)) update_option($update, "false");
+    foreach (get_categories() as $category) {
+      $name = "push7_push_ctg_".$category->name;
+      register_setting('push7-settings-group', $name);
+      if(get_option($name) === false) update_option($name, "true");
     }
 
     // デフォルトの投稿タイプ(post)及びカスタム投稿タイプ設定
     foreach (self::post_types() as $post_type) {
-      $new = "push7_push_pt_".$post_type."_on_new";
-      $update = "push7_push_pt_".$post_type."_on_update";
-      register_setting('push7-settings-group', $new);
-      register_setting('push7-settings-group', $update);
-      if(!get_option($new)) update_option($new, "false");
-      if(!get_option($update)) update_option($update, "false");
+      $name = "push7_push_pt_".$post_type;
+      register_setting('push7-settings-group', $name);
+      if(get_option($name) === false) update_option($name, "false");
     }
 
     if(!get_option("push7_sslverify_disabled")) update_option("push7_sslverify_disabled", "false");
@@ -182,37 +198,14 @@ class Push7 {
     include 'metabox.php';
   }
 
-  public static function get_push_config($type, $identity) {
+  public static function push_default_config() {
     global $post;
-    $new = "push7_push_".$type."_".$identity."_on_new";
-    $update = "push7_push_".$type."_".$identity."_on_update";
-    switch ($post->post_status) {
-      // 新規投稿時
-      case 'auto-draft':
-        return get_option($new);
-      // 記事更新時
-      case 'publish':
-        return get_option($update);
-      case 'draft':
-        return get_option($update);
-    }
+    $name = "push7_push_pt_".get_post_type($post);
+    // 新規投稿なら設定されているデフォルト値を返し,新規投稿でないならfalse(デフォルトでブッシュ通知をしない)と返す
+    return $post->post_date === current_time('mysql') ? get_option($name) : "false";
   }
 
-  public static function check_push(){
-    global $post;
-    $flag = true;
-    $categories = get_the_category($post);
-    foreach ($categories as $category) {
-      if (self::get_push_config("ctg", $category->slug) === "false") {
-        $flag = false;
-        break;
-      }
-    }
-    if (self::get_push_config("pt", get_post_type($post)) === "false") $flag = false;
-    return $flag ? "true" : "false";
-  }
-
-  public static function admin_url () {
+  public static function admin_url() {
     $args = array( 'page' => 'push7' );
     return add_query_arg( $args ,  admin_url( 'options-general.php' ));
   }
