@@ -75,7 +75,7 @@
             <td>
         <?php
           foreach ($categories as $category) {
-            $name = "push7_push_ctg_".$category->name;
+            $name = "push7_push_ctg_".$category->slug;
         ?>
               <label for="<?php echo $name; ?>">
                 <input type="checkbox" name="<?php echo $name; ?>" value="true" <?php checked("true", get_option($name)) ?>>
@@ -85,6 +85,7 @@
         <?php
           }
         ?>
+              <p class="description">ここでチェックを外したカテゴリを含んだ投稿は自動ではプッシュ通知がされません。</p>
             </td>
           </tr>
         </tbody></table>

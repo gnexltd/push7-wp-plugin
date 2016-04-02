@@ -49,12 +49,12 @@ class Push7 {
       if (!empty($_POST['push7_not_notify'])) return;
 
       foreach (get_the_category($post) as $category) {
-        if (get_option("push7_push_ctg_".$category->name) !== "true") {
-          $_SESSION['error_message'] =
-            'カテゴリー:"'
+        if (get_option("push7_push_ctg_".$category->slug) !== "true") {
+          $_SESSION['notice_message'] =
+            'カテゴリー「'
             .$category->name
-            .'"の「投稿時自動プッシュする」の設定が無効になっていたので、プッシュ通知は送信されませんでした。もしプッシュ通知を送信したい場合'
-            .sprintf('<a href="%s" target="_blank">%s</a>', 'https://dashboard.push7.jp/u/d/', 'こちら')
+            .'」の「投稿時自動プッシュする」の設定が無効になっていたので、プッシュ通知は送信されませんでした。もしプッシュ通知を送信したい場合'
+            .sprintf('<a href="%s" target="_blank">こちら</a>', 'https://dashboard.push7.jp/u/d/')
             .'より手動で送信をお願いします。';
           return;
         }
@@ -138,6 +138,9 @@ class Push7 {
     } elseif (isset($_SESSION['error_message'])) {
       ?><div class="error is-dismissible"><p>Push7 Error: <?php echo $_SESSION['error_message'] ?></p></div><?php
       unset($_SESSION['error_message']);
+    } elseif (isset($_SESSION['notice_message'])) {
+      ?><div class="notice update-nag is-dismissible"><p>Push7 Error: <?php echo $_SESSION['notice_message'] ?></p></div><?php
+      unset($_SESSION['notice_message']);
     }
   }
 
@@ -150,7 +153,7 @@ class Push7 {
 
     // カテゴリ設定
     foreach (get_categories() as $category) {
-      $name = "push7_push_ctg_".$category->name;
+      $name = "push7_push_ctg_".$category->slug;
       register_setting('push7-settings-group', $name);
       if(get_option($name) === false) update_option($name, "true");
     }
@@ -198,7 +201,7 @@ class Push7 {
     include 'metabox.php';
   }
 
-  public static function push_default_config() {
+  public function push_default_config() {
     global $post;
     $name = "push7_push_pt_".get_post_type($post);
     // 新規投稿なら設定されているデフォルト値を返し,新規投稿でないならfalse(デフォルトでブッシュ通知をしない)と返す
