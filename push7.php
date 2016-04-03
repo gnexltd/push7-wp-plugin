@@ -47,16 +47,19 @@ class Push7 {
     // metaboxが存在する場合
     if (!empty($_POST['metabox_exist'])) {
       // 「通知しない」にチェックが入っている場合、push通知しない
-      if (!empty($_POST['push7_not_notify'])) return;
+      if (!empty($_POST['push7_not_notify'])) {
+        $_SESSION['notice_message'] = '右下の「通知を送信しない」のチェックボックスが入っていたため通知は送信されませんでした。';
+        return;
+      }
 
-      foreach (get_the_category($post) as $category) {
+      foreach (get_the_category($postData) as $category) {
         if (get_option("push7_push_ctg_".$category->slug) !== "true") {
           $_SESSION['notice_message'] =
             'カテゴリー「'
             .$category->name
             .'」の「投稿時自動プッシュする」の設定が無効になっていたので、プッシュ通知は送信されませんでした。もしプッシュ通知を送信したい場合'
             .sprintf('<a href="%s" target="_blank">こちら</a>', 'https://dashboard.push7.jp/u/d/')
-            .'より手動で送信をお願いします。';
+            .'より手動で送信をするか、カテゴリを見直した上、右下の「通知を送信しない」チェックボックスを外して送信をお願いします。';
           return;
         }
       }
@@ -165,7 +168,7 @@ class Push7 {
   }
 
   public function page_init() {
-    session_start();
+    if(!$this->is_session_started()) session_start();
     register_setting('push7-settings-group', 'push7_blog_title');
     register_setting('push7-settings-group', 'push7_appno');
     register_setting('push7-settings-group', 'push7_apikey');
@@ -185,7 +188,11 @@ class Push7 {
     foreach (self::post_types() as $post_type) {
       $name = "push7_push_pt_".$post_type;
       register_setting('push7-settings-group', $name);
-      if(get_option($name) === false) update_option($name, "false");
+      if ($post_type === 'post') {
+        if(get_option($name) === false) update_option($name, "true");
+      } else {
+        if(get_option($name) === false) update_option($name, "false");
+      }
     }
 
     load_plugin_textdomain( 'push7', null, dirname(__FILE__) . '/languages' );
@@ -225,8 +232,11 @@ class Push7 {
   public function push_default_config() {
     global $post;
     $name = "push7_push_pt_".get_post_type($post);
-    // 新規投稿なら設定されているデフォルト値を返し,新規投稿でないならfalse(デフォルトでブッシュ通知をしない)と返す
-    return $post->post_date === current_time('mysql') ? get_option($name) : "false";
+    if ($post->post_status === 'publish') {
+      return 'false';
+    } else {
+      return get_option($name);
+    }
   }
 
   public static function admin_url() {
@@ -256,5 +266,17 @@ class Push7 {
 
   public static function sslverify() {
     return get_option('push7_sslverify_disabled') === 'false' ? true : false;
+  }
+
+  // HACKED: http://php.net/manual/ja/function.session-status.php
+  public static function is_session_started() {
+    if ( php_sapi_name() !== 'cli' ) {
+      if ( version_compare(phpversion(), '5.4.0', '>=') ) {
+        return session_status() === PHP_SESSION_ACTIVE ? TRUE : FALSE;
+      } else {
+        return session_id() === '' ? FALSE : TRUE;
+      }
+    }
+    return FALSE;
   }
 }
