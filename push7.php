@@ -19,6 +19,7 @@ class Push7 {
 
   public function __construct() {
     add_action('transition_post_status', array($this, 'push_post'), 10, 3);
+    add_action('transition_post_status', array($this, 'check_future'), 10, 3);
     add_action('admin_menu', array($this, 'admin_menu'));
     add_action('admin_menu', array($this, 'metabox'));
     add_action('admin_init', array($this, 'page_init'));
@@ -41,7 +42,7 @@ class Push7 {
 
   public function push_post($new_status, $old_status, $postData) {
     // new_statusが公開済みでなければpush通知しない
-    if($new_status != 'publish') return;
+    if($new_status !== 'publish') return;
 
     // metaboxが存在する場合
     if (!empty($_POST['metabox_exist'])) {
@@ -60,10 +61,20 @@ class Push7 {
         }
       }
 
-    // metaboxが存在しない(API経由,サードパーティのクライアント経由での投稿の場合)
+    // metaboxが存在しない(内部での処理,API経由,サードパーティのクライアント経由での投稿の場合)
     } else {
-      // 設定を読み、falseならばpush通知しない
-      if ($this->push_default_config() === 'false') return;
+      if ($old_status === 'future') {
+        $future_opt_name = 'push7_future_'.$postData->ID;
+        if (get_option($future_opt_name) === false) {
+          // option-table内にデータが保持されていなければpush通知しない
+          return;
+        } else {
+          delete_option($future_opt_name);
+        }
+      } elseif ($this->push_default_config() === 'false') {
+        // 設定を読み、falseならばpush通知しない
+        return;
+      }
     }
 
     // emptyに式を渡すとWP提出時rejectされるので使用しないように
@@ -144,12 +155,24 @@ class Push7 {
     }
   }
 
+  public function check_future($new_status, $old_status, $postData) {
+    if ($new_status === 'future') {
+      if ( (!empty($_POST['metabox_exist'])) && (empty($_POST['push7_not_notify'])) ) {
+        // 投稿された時にそれが予約投稿でありかつmetaboxから渡された値が'通知する'だった場合option-tableに保持しておく
+        update_option('push7_future_'.$postData->ID, 1);
+      }
+    }
+  }
+
   public function page_init() {
     session_start();
     register_setting('push7-settings-group', 'push7_blog_title');
     register_setting('push7-settings-group', 'push7_appno');
     register_setting('push7-settings-group', 'push7_apikey');
     register_setting('push7-settings-group', 'push7_sslverify_disabled');
+
+    if(get_option("push7_sslverify_disabled") === false) update_option("push7_sslverify_disabled", "false");
+    if(get_option("push7_store") === false) update_option("push7_store", array());
 
     // カテゴリ設定
     foreach (get_categories() as $category) {
@@ -164,8 +187,6 @@ class Push7 {
       register_setting('push7-settings-group', $name);
       if(get_option($name) === false) update_option($name, "false");
     }
-
-    if(!get_option("push7_sslverify_disabled")) update_option("push7_sslverify_disabled", "false");
 
     load_plugin_textdomain( 'push7', null, dirname(__FILE__) . '/languages' );
   }
