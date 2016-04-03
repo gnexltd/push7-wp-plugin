@@ -24,6 +24,9 @@ Push7 is now available for Chrome(Android and desktop).
 1. Open the settings menu, input your APPNO and APIKEY.
 
 == Changelog ==
+= 1.4.2 =
+* 2016-4-3 session関係のバグを改善。更新時のデフォルト設定を削除、その他UXの改善。
+
 = 1.4.1 =
 * 2016-3-29 migrate.phpの追加によるバグ訂正。
 
