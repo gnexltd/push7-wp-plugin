@@ -8,8 +8,8 @@ License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Web Push Notification Service for your website.
-Now available for Android, Chrome and Firefox.
-We will soon support Safari, iOS and other platforms.
+Now available for Android, iOS, Chrome and Firefox.
+We will soon support Safari and other platforms.
 
 == Description ==
 
@@ -24,11 +24,8 @@ Push7 is now available for Chrome(Android and desktop).
 1. Open the settings menu, input your APPNO and APIKEY.
 
 == Changelog ==
-= 1.4.2 =
-* 2016-4-2 設定項目の変更及び動作の安定性を向上
-
 = 1.4.1 =
-* 2016-3-30 設定ページの軽微な修正
+* 2016-3-29 migrate.phpの追加によるバグ訂正。
 
 = 1.4 =
 * 2016-3-29 カテゴリ、カスタム投稿タイプ毎に新規投稿時・更新時のプッシュ通知有無を設定できるオプションの追加。
