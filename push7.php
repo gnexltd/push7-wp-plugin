@@ -231,6 +231,9 @@ class Push7 {
 
   public function push_default_config() {
     global $post;
+    if(!isset($post)){
+      return 'false';
+    }
     $name = "push7_push_pt_".get_post_type($post);
     if ($post->post_status === 'publish') {
       return 'false';
