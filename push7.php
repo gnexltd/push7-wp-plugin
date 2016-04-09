@@ -25,6 +25,7 @@ class Push7 {
     add_action('admin_init', array($this, 'page_init'));
     add_action('admin_notices', array($this, 'check_push_success'));
     add_action('admin_notices', array($this, 'is_enable'));
+    add_filter('plugin_action_links_' . plugin_basename(__FILE__), array($this, 'add_setting_link'));
   }
 
   public function is_enable() {
@@ -281,5 +282,9 @@ class Push7 {
       }
     }
     return FALSE;
+  }
+
+  public function add_setting_link($links){
+    return array_merge($links, array( '<a href="' . menu_page_url('push7', false) . '">設定</a>' ) );
   }
 }
