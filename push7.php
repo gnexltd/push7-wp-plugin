@@ -3,7 +3,7 @@
 Plugin Name: Push7
 Plugin URI: https://push7.jp/
 Description: Push7 plugin for WordPress
-Version: 1.4.2
+Version: 1.4.3
 Author: GNEX Ltd.
 Author URI: https://globalnet-ex.com
 License:GPLv2 or later
@@ -15,7 +15,7 @@ new Push7();
 class Push7 {
 
   const API_URL = 'https://api.push7.jp/api/v1/';
-  const VERSION = '1.4.2';
+  const VERSION = '1.4.3';
 
   public function __construct() {
     add_action('transition_post_status', array($this, 'push_post'), 10, 3);
@@ -25,6 +25,7 @@ class Push7 {
     add_action('admin_init', array($this, 'page_init'));
     add_action('admin_notices', array($this, 'check_push_success'));
     add_action('admin_notices', array($this, 'is_enable'));
+    add_filter('plugin_action_links_' . plugin_basename(__FILE__), array($this, 'add_setting_link'));
   }
 
   public function is_enable() {
@@ -120,6 +121,7 @@ class Push7 {
         'method' => 'POST',
         'headers' => $headers + self::x_headers(),
         'body' => json_encode($data),
+        'user-agent' => self::user_agent(),
         'sslverify' => self::sslverify()
       )
     );
@@ -139,6 +141,7 @@ class Push7 {
       self::API_URL.$appno.'/head',
       array(
         'headers' => self::x_headers(),
+        'user-agent' => self::user_agent(),
         'sslverify' => self::sslverify()
       )
     );
@@ -231,6 +234,9 @@ class Push7 {
 
   public function push_default_config() {
     global $post;
+    if(!isset($post)){
+      return 'false';
+    }
     $name = "push7_push_pt_".get_post_type($post);
     if ($post->post_status === 'publish') {
       return 'false';
@@ -257,6 +263,10 @@ class Push7 {
     }
   }
 
+  public static function user_agent() {
+    return 'WordPress/' . $wp_version . '; ' . get_bloginfo( 'url' ) . '; Push7:' . self::VERSION;
+  }
+
   public static function x_headers() {
     return array(
       'X-Push7' => 'WordPress Plugin '.self::VERSION,
@@ -278,5 +288,9 @@ class Push7 {
       }
     }
     return FALSE;
+  }
+
+  public function add_setting_link($links){
+    return array_merge($links, array( '<a href="' . menu_page_url('push7', false) . '">設定</a>' ) );
   }
 }
