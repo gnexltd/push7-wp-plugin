@@ -3,7 +3,7 @@ Contributors: gnexltd
 Tags: Chrome, Chrome Notifications, Android, Safari, push, push notifications, web push notifications, web push, plugin, admin, posts, page, links, widget, ajax, social, wordpress, dashboard, news, notifications, services, desktop notifications, mobile notifications, apple, google, Firefox, new post, osx, mac, Chrome OS
 Requires at least: 4.0
 Tested up to: 4.4.1
-Stable tag: 1.4.2
+Stable tag: 1.4.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -24,6 +24,9 @@ Push7 is now available for Chrome(Android and desktop).
 1. Open the settings menu, input your APPNO and APIKEY.
 
 == Changelog ==
+= 1.4.3 =
+* 2016-4-10 クイック編集で編集した際、自動でプッシュ通知が送信されるバグの修正および設定画面のUIの軽微な修正。
+
 = 1.4.2 =
 * 2016-4-3 session関係のバグを改善。更新時のデフォルト設定を削除、その他UXの改善。
 

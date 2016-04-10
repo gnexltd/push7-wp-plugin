@@ -3,7 +3,7 @@
 Plugin Name: Push7
 Plugin URI: https://push7.jp/
 Description: Push7 plugin for WordPress
-Version: 1.4.2
+Version: 1.4.3
 Author: GNEX Ltd.
 Author URI: https://globalnet-ex.com
 License:GPLv2 or later
@@ -15,7 +15,7 @@ new Push7();
 class Push7 {
 
   const API_URL = 'https://api.push7.jp/api/v1/';
-  const VERSION = '1.4.2';
+  const VERSION = '1.4.3';
 
   public function __construct() {
     add_action('transition_post_status', array($this, 'push_post'), 10, 3);
@@ -121,6 +121,7 @@ class Push7 {
         'method' => 'POST',
         'headers' => $headers + self::x_headers(),
         'body' => json_encode($data),
+        'user-agent' => self::user_agent(),
         'sslverify' => self::sslverify()
       )
     );
@@ -140,6 +141,7 @@ class Push7 {
       self::API_URL.$appno.'/head',
       array(
         'headers' => self::x_headers(),
+        'user-agent' => self::user_agent(),
         'sslverify' => self::sslverify()
       )
     );
@@ -259,6 +261,10 @@ class Push7 {
       default:
         return $post_type;
     }
+  }
+
+  public static function user_agent() {
+    return 'WordPress/' . $wp_version . '; ' . get_bloginfo( 'url' ) . '; Push7:' . self::VERSION;
   }
 
   public static function x_headers() {
