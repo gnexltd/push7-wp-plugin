@@ -3,7 +3,7 @@
 Plugin Name: Push7
 Plugin URI: https://push7.jp/
 Description: Push7 plugin for WordPress
-Version: 1.4.3
+Version: 1.5.0
 Author: GNEX Ltd.
 Author URI: https://globalnet-ex.com
 License:GPLv2 or later
@@ -15,7 +15,7 @@ new Push7();
 class Push7 {
 
   const API_URL = 'https://api.push7.jp/api/v1/';
-  const VERSION = '1.4.3';
+  const VERSION = '1.5.0';
 
   public function __construct() {
     add_action('transition_post_status', array($this, 'push_post'), 10, 3);
@@ -230,6 +230,31 @@ class Push7 {
 
   public function view_metabox() {
     include 'metabox.php';
+  }
+
+  public function debug_dump() {
+    $data = array(
+      'host' => $_SERVER['SERVER_NAME'],
+      'plugin_ver' => self::VERSION,
+      'system' => php_uname(),
+      'php_ver' => phpversion(),
+      'appno' => get_option('push7_appno'),
+      'settings' => $this->get_settings()
+    );
+    return base64_encode(json_encode($data));
+  }
+
+  public function get_settings(){
+    $arr = array();
+    foreach (get_categories() as $category) {
+      $name = "push7_push_ctg_".$category->slug;
+      $arr[$name] = get_option($name);
+    }
+    foreach (self::post_types() as $post_type) {
+      $name = "push7_push_pt_".$post_type;
+      $arr[$name] = get_option($name);
+    }
+    return $arr;
   }
 
   public function push_default_config() {
