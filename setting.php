@@ -1,3 +1,11 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.10/clipboard.min.js"></script>
+<script type="text/javascript">
+  var clipboard = new Clipboard('.action')
+  function show_debug_info(){
+    document.getElementById('debug').style.display = 'inline'
+  }
+</script>
+
 <div class="wrap">
   <h2>Push7 Setting</h2>
   <form action="options.php" method="post">
@@ -115,5 +123,14 @@
     </tbody></table>
 
     <?php submit_button(); ?>
+
+    <button type="button" class="button action" onclick="show_debug_info()">デバッグ情報を出力する</button>
+    <p>
+      基本的に出力する必要はありません。
+    </p>
+    <div id="debug" style="display: none;">
+      <input id="debug_dump" rows="5" value="<?php echo $this->debug_dump(); ?>"></input>
+      <button type="button" class="button action" data-clipboard-target="#debug_dump">コピーする</button>
+    </div>
   </form>
 </div>
