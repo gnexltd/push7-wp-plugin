@@ -299,6 +299,7 @@ class Push7 {
   }
 
   public static function user_agent() {
+    global $wp_version;
     return 'WordPress/' . $wp_version . '; ' . get_bloginfo( 'url' ) . '; Push7:' . self::VERSION;
   }
 
