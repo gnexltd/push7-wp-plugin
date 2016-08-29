@@ -115,6 +115,16 @@ class Push7 {
       'Content-Type' => 'application/json',
     );
 
+    /**
+     * Filters the Push7 Notification on publishing post POST request payload.
+     *
+     * @since 1.6.0-dev
+     *
+     * @param array $data post payload
+     * @param WP_Post $postData post item
+     */
+    $data = apply_filters( 'push7_send_on_post', $data, $postData );
+
     $responce = wp_remote_post(
       self::API_URL . $appno.'/send',
       array(
