@@ -54,7 +54,11 @@ class Push7 {
       }
 
       foreach (get_the_category($postData) as $category) {
-        if (get_option("push7_push_ctg_".$category->slug) !== "true") {
+        $ctag = "push7_push_ctg_".$category->slug;
+        if (get_option($ctag) === false) {
+          register_setting('push7-settings-group', $name);
+          update_option($ctag, "true");
+        } else if (get_option($ctag) === "false") {
           $_SESSION['notice_message'] =
             'カテゴリー「'
             .$category->name
