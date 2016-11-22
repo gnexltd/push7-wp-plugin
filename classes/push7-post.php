@@ -7,6 +7,9 @@ class Push7_Post {
   }
 
   public function hook_transition_post_status($new_status, $old_status, $postData) {
+    global $push7;
+    $push7->init();
+
     if ($new_status !== 'publish') {
       return;
     }
