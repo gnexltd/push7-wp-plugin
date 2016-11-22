@@ -1,7 +1,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.10/clipboard.min.js"></script>
 <script type="text/javascript">
   var clipboard = new Clipboard('.action')
-  function show_debug_info(){
+  function show_debug_info() {
     document.getElementById('debug').style.display = 'inline'
   }
 </script>
@@ -81,18 +81,18 @@
           <tr>
             <th>新規投稿時自動プッシュする</th>
             <td>
-        <?php
-          foreach ($categories as $category) {
-            $name = "push7_push_ctg_".$category->slug;
-        ?>
-              <label for="<?php echo $name; ?>">
-                <input type="checkbox" name="<?php echo $name; ?>" value="true" <?php checked("true", get_option($name)) ?>>
-                <?php echo $category->name; ?>
-              </label>
-              <br>
-        <?php
-          }
-        ?>
+              <?php
+                foreach ($categories as $category) {
+                  $name = "push7_push_ctg_".$category->slug;
+              ?>
+                  <label for="<?php echo $name; ?>">
+                    <input type="checkbox" name="<?php echo $name; ?>" value="true" <?php checked("true", get_option($name)) ?>>
+                    <?php echo $category->name; ?>
+                  </label>
+                  <br>
+              <?php
+                }
+              ?>
               <p class="description">ここでチェックを外したカテゴリを含んだ投稿は自動ではプッシュ通知がされません。</p>
             </td>
           </tr>
@@ -106,18 +106,24 @@
       <tr>
         <th>新規投稿時自動プッシュする</th>
         <td>
-      <?php
-        foreach (self::post_types() as $post_type) {
-          $name = "push7_push_pt_".$post_type;
-      ?>
-          <label for="<?php echo $name; ?>">
-            <input type="checkbox" name="<?php echo $name;?>" value="true" <?php checked("true", get_option($name)) ?>>
-            <?php echo self::disp_post_type($post_type); ?>
+        <?php
+          foreach (Push7::post_types() as $post_type) {
+            $name = "push7_push_pt_".$post_type;
+        ?>
+            <label for="<?php echo $name; ?>">
+              <input type="checkbox" name="<?php echo $name;?>" value="true" <?php checked("true", get_option($name)) ?>>
+              <?php
+                if ($post_type == 'post') {
+                  echo 'post(通常の投稿)';
+                } else {
+                  echo $post_type;
+                }
+              ?>
           </label>
           <br>
-      <?php
-        }
-      ?>
+        <?php
+          }
+        ?>
         </td>
       </tr>
     </tbody></table>
