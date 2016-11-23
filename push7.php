@@ -11,10 +11,11 @@ License:GPLv2 or later
 Text Domain: push7
 */
 
-require_once (plugin_dir_path( __FILE__ ).'classes/push7.php');
-require_once (plugin_dir_path( __FILE__ ).'classes/push7-admin-notices.php');
-require_once (plugin_dir_path( __FILE__ ).'classes/push7-admin-menu.php');
-require_once (plugin_dir_path( __FILE__ ).'classes/push7-post.php');
+require_once 'classes/push7.php';
+require_once 'classes/push7-admin-notices.php';
+require_once 'classes/push7-admin-menu.php';
+require_once 'classes/push7-post.php';
+require_once 'classes/push7-box.php';
 
 define('PUSH7_DIR', dirname(__FILE__));
 define('PUSH7_BASE_NAME', plugin_basename(__FILE__));

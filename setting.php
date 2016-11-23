@@ -69,6 +69,27 @@
             </fieldset>
           </td>
         </tr>
+
+        <tr>
+          <th>
+            <label for="push7_box_enabled">
+              <?php _e( 'Push7Boxを有効にする', 'push7' ); ?>
+            </label>
+          </th>
+          <td>
+            <fieldset>
+              <label title="true">
+                <input type="radio" name="push7_box_enabled" value="true" <?php checked("true", get_option("push7_box_enabled")); ?>>
+                <?php _e( 'する', 'push7' ); ?>
+              </label>
+              <br>
+              <label title="false">
+                <input type="radio" name="push7_box_enabled" value="false" <?php checked("false", get_option("push7_box_enabled")); ?>>
+                <?php _e( 'しない', 'push7' ); ?>
+              </label>
+            </fieldset>
+          </td>
+        </tr>
       </tbody>
     </table>
 
@@ -93,7 +114,7 @@
               <?php
                 }
               ?>
-              <p class="description">ここでチェックを外したカテゴリを含んだ投稿は自動ではプッシュ通知がされません。</p>
+              <p class="description">ここでチェックを外したカテゴリを含んだ投稿は自動でのプッシュ通知が行われません。</p>
             </td>
           </tr>
         </tbody></table>
