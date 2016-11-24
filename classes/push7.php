@@ -57,31 +57,6 @@ class Push7 {
     load_plugin_textdomain('push7', null, PUSH7_DIR.'/languages');
   }
 
-  public function debug_dump() {
-    $data = array(
-      'host' => $_SERVER['SERVER_NAME'],
-      'plugin_ver' => self::VERSION,
-      'system' => php_uname(),
-      'php_ver' => phpversion(),
-      'appno' => get_option('push7_appno'),
-      'settings' => $this->get_settings()
-    );
-    return base64_encode(json_encode($data));
-  }
-
-  public function get_settings(){
-    $ary = array();
-    foreach (get_categories() as $category) {
-      $name = "push7_push_ctg_".$category->slug;
-      $ary[$name] = get_option($name);
-    }
-    foreach (self::post_types() as $post_type) {
-      $name = "push7_push_pt_".$post_type;
-      $ary[$name] = get_option($name);
-    }
-    return $ary;
-  }
-
   public static function admin_url() {
     return add_query_arg(array('page' => 'push7'), admin_url('options-general.php'));
   }
