@@ -23,13 +23,13 @@ class Push7 {
     register_setting('push7-settings-group', 'push7_appno');
     register_setting('push7-settings-group', 'push7_apikey');
     register_setting('push7-settings-group', 'push7_sslverify_disabled');
-    register_setting('push7-settings-group', 'push7_box_enabled');
+    register_setting('push7-settings-group', 'push7_sdk_enabled');
 
     if (!get_option("push7_sslverify_disabled")) {
       update_option("push7_sslverify_disabled", "false");
     }
     if (!get_option("push7_sslverify_disabled")) {
-      update_option("push7_box_enabled", "false");
+      update_option("push7_sdk_enabled", "false");
     }
 
     foreach (get_categories() as $category) {
@@ -74,7 +74,7 @@ class Push7 {
   }
 
   public static function box_enabled() {
-    return get_option('push7_box_enabled') === 'true' ? true : false;
+    return get_option('push7_sdk_enabled') === 'true' ? true : false;
   }
 
   public static function is_session_started() {

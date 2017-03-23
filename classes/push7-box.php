@@ -6,10 +6,9 @@ class Push7_Box {
   }
 
   public function render() {
-    if (get_option('push7_box_enabled') === 'true') {
+    if (get_option('push7_sdk_enabled') === 'true') {
       ?>
-        <script src="https://sdk.push7.jp/v1/p7sdk.js"></script>
-        <meta name="p7appno" content="<?php echo get_option('push7_appno'); ?>">
+        <script src="https://sdk.push7.jp/v2/p7sdk.js"></script>
       <?php
     }
   }
