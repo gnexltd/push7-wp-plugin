@@ -1,6 +1,6 @@
 <?php
 
-class Push7_Box {
+class Push7_Sdk {
   public function __construct() {
     add_action('wp_head', array($this, 'render'));
   }
