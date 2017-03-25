@@ -15,7 +15,7 @@ require_once 'classes/push7.php';
 require_once 'classes/push7-admin-notices.php';
 require_once 'classes/push7-admin-menu.php';
 require_once 'classes/push7-post.php';
-require_once 'classes/push7-box.php';
+require_once 'classes/push7-sdk.php';
 
 define('PUSH7_DIR', dirname(__FILE__));
 define('PUSH7_BASE_NAME', plugin_basename(__FILE__));
