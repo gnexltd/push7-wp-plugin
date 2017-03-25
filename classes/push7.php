@@ -8,7 +8,7 @@ class Push7 {
     new Push7_Admin_Menu();
     new Push7_Admin_Notices();
     new Push7_Post();
-    new Push7_Box();
+    new Push7_Sdk();
 
     add_action('admin_init', array($this, 'init'));
     add_filter('plugin_action_links_'.PUSH7_BASE_NAME, array($this, 'add_setting_link'));
