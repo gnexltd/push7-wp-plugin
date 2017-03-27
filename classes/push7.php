@@ -28,7 +28,7 @@ class Push7 {
     if (!get_option("push7_sslverify_disabled")) {
       update_option("push7_sslverify_disabled", "false");
     }
-    if (!get_option("push7_sslverify_disabled")) {
+    if (!get_option("push7_sdk_enabled")) {
       update_option("push7_sdk_enabled", "false");
     }
 
