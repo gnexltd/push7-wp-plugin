@@ -4,7 +4,7 @@
 Plugin Name: Push7
 Plugin URI: https://push7.jp/
 Description: Push7 plugin for WordPress
-Version: 2.0.1
+Version: 2.1.0
 Author: GNEX Ltd.
 Author URI: https://globalnet-ex.com
 License:GPLv2 or later
