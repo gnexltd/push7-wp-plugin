@@ -11,7 +11,8 @@ foreach (get_categories() as $category) {
   delete_option($opt);
 }
 
-foreach (Push7::post_types() as $post_type) {
+$post_types = array('post' => 'post') + get_post_types(array('_builtin' => false));
+foreach ($post_types as $post_type) {
   $opt = "push7_push_pt_".$post_type;
   delete_option($opt);
 }

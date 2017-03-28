@@ -2,7 +2,7 @@
 
 class Push7 {
   const API_URL = 'https://api.push7.jp/api/v1/';
-  const VERSION = '2.0.1';
+  const VERSION = '2.1.0';
 
   public function __construct() {
     new Push7_Admin_Menu();
@@ -28,7 +28,7 @@ class Push7 {
     if (!get_option("push7_sslverify_disabled")) {
       update_option("push7_sslverify_disabled", "false");
     }
-    if (!get_option("push7_sslverify_disabled")) {
+    if (!get_option("push7_sdk_enabled")) {
       update_option("push7_sdk_enabled", "false");
     }
 
