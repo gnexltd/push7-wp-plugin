@@ -66,7 +66,8 @@ class Push7 {
   }
 
   public static function user_agent() {
-    return 'WordPress/'.$wp_version.'; '.get_bloginfo('url').'; Push7:'.Push7::VERSION;
+    global $wp_version;
+    return 'WordPress/' . $wp_version . '; '.get_bloginfo('url') . '; Push7:' . Push7::VERSION;
   }
 
   public static function sslverify() {
