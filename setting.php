@@ -149,6 +149,35 @@
       </tr>
     </tbody></table>
 
+    <h2 class="title">サードパーティエディタのプッシュ通知設定</h2>
+
+    <p>
+      MarsEditなど、外部エディタを利用している場合の挙動についてはこちらをご利用ください。
+    </p>
+
+    <table class="form-table">
+      <tbody>
+        <tr>
+          <th>
+            記事更新時のプッシュ通知送信
+          </th>
+          <td>
+            <fieldset>
+              <label title="true">
+                <input type="radio" name="push7_update_from_thirdparty" value="true" <?php checked("true", get_option("push7_update_from_thirdparty")); ?>>
+                <?php _e( 'する', 'push7' ); ?>
+              </label>
+              <br>
+              <label title="false">
+                <input type="radio" name="push7_update_from_thirdparty" value="false" <?php checked("false", get_option("push7_update_from_thirdparty")); ?>>
+                <?php _e( 'しない', 'push7' ); ?>
+              </label>
+            </fieldset>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
     <?php submit_button(); ?>
 
     <button type="button" class="button action" onclick="show_debug_info()">デバッグ情報を出力する</button>
