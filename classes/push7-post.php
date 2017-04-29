@@ -15,21 +15,25 @@ class Push7_Post {
     }
 
     if (array_key_exists('metabox_exist', $_POST)) {
-      if (!empty($_POST['push7_not_notify'])) {
+      if (isset($_POST['push7_not_notify']) && $_POST['push7_not_notify'] == "false") {
         $_SESSION['notice_message'] = '右下の「通知を送信しない」のチェックボックスが入っていたため通知は送信されませんでした。';
         return;
       }
     } else {
-      if ($old_status === 'future') {
-        $future_opt_name = 'push7_future_'.$postData->ID;
-        if (get_option($future_opt_name) === false) {
-          return;
-        } else {
-          delete_option($future_opt_name);
-        }
-      } elseif ($this::push_default_config() === 'false') {
+      if(get_option("push7_update_from_thirdparty") == "false"){
         return;
       }
+    }
+
+    if ($old_status === 'future') {
+      $future_opt_name = 'push7_future_'.$postData->ID;
+      if (get_option($future_opt_name) === false) {
+        return;
+      } else {
+        delete_option($future_opt_name);
+      }
+    } elseif ($this::push_default_config() === 'false') {
+      return;
     }
 
     $this->push($postData);
@@ -122,8 +126,12 @@ class Push7_Post {
   public function metabox(){
     global $post;
     ?>
+      <style>[name="push7_not_notify"]:not([value="false"]){display:none;}</style>
       <input type="hidden" name="metabox_exist" value="true">
-      <input type="checkbox" name="push7_not_notify" value="false" <?php checked("false", self::push_default_config($post)); ?>>通知を送信しない
+      <input type="checkbox" name="push7_not_notify" value="false" <?php checked("false", self::push_default_config($post)); ?>>
+      <input type="checkbox" name="push7_not_notify" value="true" <?php checked("true", self::push_default_config($post)); ?>>
+      <script>jQuery(function(){var $ = jQuery;$("[name='push7_not_notify'][value='false']").click(function(e){$(this).siblings().click();})})</script>
+      通知を送信しない
     <?php
   }
 
