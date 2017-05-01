@@ -24,12 +24,18 @@ class Push7 {
     register_setting('push7-settings-group', 'push7_apikey');
     register_setting('push7-settings-group', 'push7_sslverify_disabled');
     register_setting('push7-settings-group', 'push7_sdk_enabled');
+    register_setting('push7-settings-group', 'push7_update_from_thirdparty');
 
     if (!get_option("push7_sslverify_disabled")) {
       update_option("push7_sslverify_disabled", "false");
     }
+
     if (!get_option("push7_sdk_enabled")) {
       update_option("push7_sdk_enabled", "false");
+    }
+
+    if (!get_option("push7_update_from_thirdparty")) {
+      update_option("push7_update_from_thirdparty", "false");
     }
 
     foreach (get_categories() as $category) {
@@ -66,7 +72,8 @@ class Push7 {
   }
 
   public static function user_agent() {
-    return 'WordPress/'.$wp_version.'; '.get_bloginfo('url').'; Push7:'.Push7::VERSION;
+    global $wp_version;
+    return 'WordPress/' . $wp_version . '; '.get_bloginfo('url') . '; Push7:' . Push7::VERSION;
   }
 
   public static function sslverify() {
