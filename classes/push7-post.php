@@ -13,14 +13,13 @@ class Push7_Post {
     if ($new_status !== 'publish') {
       return;
     }
-
-    if (array_key_exists('metabox_exist', $_POST)) {
-      if (isset($_POST['push7_not_notify']) && $_POST['push7_not_notify'] == "false") {
-        $_SESSION['notice_message'] = '右下の「通知を送信しない」のチェックボックスが入っていたため通知は送信されませんでした。';
+    if ( isset( $_POST['push7_not_notify'] ) ) {
+      if ( $_POST['push7_not_notify'] === 'true' ) {
+        $_SESSION['p7_notice'] = '右下の「通知を送信しない」のチェックボックスが入っていたため通知は送信されませんでした。';
         return;
       }
     } else {
-      if(get_option("push7_update_from_thirdparty") == "false"){
+      if( get_option('push7_update_from_thirdparty') === 'false'){
         return;
       }
     }
@@ -32,7 +31,7 @@ class Push7_Post {
       } else {
         delete_option($future_opt_name);
       }
-    } elseif ($this::push_default_config($postData) === 'false') {
+    } elseif (!isset( $_POST['push7_not_notify'] ) && $this::push_default_config($postData) === 'false') {
       return;
     }
 
@@ -126,22 +125,19 @@ class Push7_Post {
   public function metabox(){
     global $post;
     ?>
-      <style>[name="push7_not_notify"]:not([value="false"]){display:none;}</style>
-      <input type="hidden" name="metabox_exist" value="true">
-      <input type="checkbox" name="push7_not_notify" value="false" <?php checked("false", self::push_default_config($post)); ?>>
-      <input type="checkbox" name="push7_not_notify" value="true" <?php checked("true", self::push_default_config($post)); ?>>
-      <script>jQuery(function(){var $ = jQuery;$("[name='push7_not_notify'][value='false']").click(function(e){$(this).siblings().click();})})</script>
+      <input type="hidden" name="push7_not_notify" value="false">
+      <input type="checkbox" name="push7_not_notify" value="true" <?php checked('false', self::push_default_config($post)); ?>>
       通知を送信しない
     <?php
   }
 
   public function push_default_config($post = null) {
     $post = get_post($post);
-    $opt = "push7_push_pt_".get_post_type($post);
+    $opt = "push7_push_pt_".$post->post_type;
     if ($post->post_status === 'publish') {
       return 'false';
     } else {
-      return var_export(get_option($opt), true);
+      return get_option($opt, 'false');
     }
   }
 }
