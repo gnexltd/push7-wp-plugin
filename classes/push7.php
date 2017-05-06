@@ -48,14 +48,14 @@ class Push7 {
 
     foreach (Push7::post_types() as $post_type) {
       $opt = "push7_push_pt_".$post_type;
-      register_setting('push7-settings-group', $opt);
+      register_setting('push7-settings-group', $opt, array('Push7', 'normalize_checkbox_val'));
       if ($post_type === 'post') {
         if (is_null(get_option($opt, null))) {
           update_option($opt, true);
         }
       } else {
         if (is_null(get_option($opt, null))) {
-          update_option($opt, false);
+          update_option($opt, 'false');
         }
       }
     }
@@ -97,5 +97,9 @@ class Push7 {
 
   public function add_setting_link($links){
     return array_merge($links, array('<a href="'.menu_page_url('push7', false).'">設定</a>'));
+  }
+
+  public static function normalize_checkbox_val($val) {
+    return (string)$val === 'true' ? 'true' : 'false';
   }
 }
