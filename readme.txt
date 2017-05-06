@@ -24,6 +24,9 @@ Push7 is now available for Chrome(Android and desktop).
 1. Open the settings menu, input your APPNO and APIKEY.
 
 == Changelog ==
+= 2.2.2 = 
+* 500エラーを修正
+
 = 2.2.1 =
 * README修正
 
