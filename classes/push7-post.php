@@ -32,7 +32,7 @@ class Push7_Post {
       } else {
         delete_option($future_opt_name);
       }
-    } elseif ($this::push_default_config($postData) === 'false') {
+    } elseif ($this::push_default_config() === 'false') {
       return;
     }
 
@@ -135,8 +135,7 @@ class Push7_Post {
     <?php
   }
 
-  public function push_default_config($post = null) {
-    $post = get_post($post);
+  public function push_default_config($post) {
     $opt = "push7_push_pt_".get_post_type($post);
     if ($post->post_status === 'publish') {
       return 'false';
