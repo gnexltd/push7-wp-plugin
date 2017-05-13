@@ -38,7 +38,7 @@ function show_advances_info() {
 
         <tr>
           <th>
-            <label for="appno">APPNO</label>
+            <label for="appno">App Number</label>
           </th>
           <td>
             <input type="text" id="push7_appno" class="regular-text" name="push7_appno" value="<?= esc_attr(get_option('push7_appno')); ?>">
@@ -47,7 +47,7 @@ function show_advances_info() {
 
         <tr>
           <th>
-            <label for="apikey">APIKEY</label>
+            <label for="apikey">API Key</label>
           </th>
           <td>
             <input type="text" id="push7_apikey" class="regular-text" name="push7_apikey" value="<?= esc_attr(get_option('push7_apikey')); ?>">
