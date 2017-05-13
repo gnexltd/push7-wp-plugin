@@ -13,8 +13,8 @@ class Push7_Admin_Notices {
         <p>
         <?php
           printf(
-            __('Push7のダッシュボードにある自動送信設定から、必要なApp NumberとAPI Keyを取得し%sから記入して下さい。', 'push7'),
-            sprintf('<a href="%s">%s</a>', Push7::admin_url(), __('こちら', 'push7'))
+            'Push7のダッシュボードにある自動送信設定から、必要なApp NumberとAPI Keyを取得し%sから記入して下さい。',
+            sprintf('<a href="%s">%s</a>', Push7::admin_url(), 'こちら')
           );
         ?>
         </p>

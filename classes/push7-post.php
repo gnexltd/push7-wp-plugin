@@ -86,6 +86,7 @@ class Push7_Post {
       $_SESSION['p7_error'] = $message->error;
       return;
     }
+
     $_SESSION['p7_success'] = '通知は正常に配信されました';
   }
 
@@ -116,7 +117,7 @@ class Push7_Post {
     foreach (Push7::post_types() as $post_type) {
       add_meta_box(
         'push7metabox',
-        __( 'Push7 通知設定', 'push7' ),
+        'Push7 通知設定',
         array($this, 'metabox'),
         $post_type,
         'side'

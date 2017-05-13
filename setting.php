@@ -19,7 +19,7 @@ function show_advances_info() {
       <tbody>
         <tr>
           <th>
-            <label for="blog_title"><?php _e('ブログのタイトル(任意)', 'push7');?></label>
+            <label for="blog_title">ブログのタイトル(任意)</label>
           </th>
           <td>
             <?php
