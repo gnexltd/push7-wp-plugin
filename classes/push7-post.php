@@ -92,11 +92,7 @@ class Push7_Post {
 
   public function check_ssl_error($err){
     if (strpos($err, 'SSL certificate problem')) return;
-    $_SESSION['error_message'] = sprintf(
-      "SSLの検証がpush通知を阻害している可能性があります。<a href='%s'>%s</a>よりSSLの検証を無効化していただくことで対処できる可能性があります。",
-      Push7::admin_url(),
-      '管理画面'
-    );
+    $_SESSION['error_message'] = sprintf( "SSLの検証がpush通知を阻害している可能性があります。<a href='%s'>管理画面</a>よりSSLの検証を無効化していただくことで対処できる可能性があります。", Push7::admin_url() );
   }
 
   public function get_app_head($appno) {
