@@ -7,30 +7,39 @@ class Push7_Admin_Notices {
   }
 
   public function check_setting() {
-    if (!get_option("push7_appno") || !get_option("push7_apikey")) {
-      ?>
-        <div class='update-nag is-dismissible'><p>
-          <?php
-            printf(
-              __('Push7のダッシュボードにある自動プッシュ設定から、必要なAPPNOとAPIKEYを取得し%sから記入して下さい。','push7'),
-              sprintf('<a href="%s">%s</a>', Push7::admin_url(), __('こちら', 'push7'))
-            );
-          ?>
-        </p></div>
-      <?php
-    }
+    if (get_option("push7_appno") && get_option("push7_apikey")) return;
+    ?>
+      <div class='update-nag is-dismissible'>
+        <p>
+        <?php
+          printf(
+            'Push7のダッシュボードにある自動送信設定から、必要なApp NumberとAPI Keyを取得し%sから記入して下さい。',
+            sprintf('<a href="%s">%s</a>', Push7::admin_url(), 'こちら')
+          );
+        ?>
+        </p>
+      </div>
+    <?php
   }
 
   public function message() {
-    if (isset($_SESSION['p7_success'])){
-      ?><div class="notice notice-success is-dismissible"><p>Push7: <?php _e($_SESSION['p7_success'], 'push7' );?></p></div><?php
-      unset($_SESSION['p7_success']);
-    } elseif (isset($_SESSION['p7_error'])) {
-      ?><div class="notice error is-dismissible"><p>Push7 Error: <?php _e($_SESSION['p7_error'], 'push7') ?></p></div><?php
-      unset($_SESSION['p7_error']);
-    } elseif (isset($_SESSION['p7_notice'])) {
-      ?><div class="notice update-nag is-dismissible"><p>Push7 Error: <?php _e($_SESSION['p7_notice'], 'push7') ?></p></div><?php
-      unset($_SESSION['p7_notice']);
+    $types = array(
+      array( 'name'  => 'success', 'class' => 'notice-success', 'message' => '' ),
+      array( 'name'  => 'error'  , 'class' => 'error'         , 'message' => '' ),
+      array( 'name'  => 'notice' , 'class' => 'update-nag'    , 'message' => '' )
+    );
+
+    foreach ($types as $type) {
+      if (!isset($_SESSION['p7_'.$type['name']])) continue;
+      ?>
+        <div class="notice <?= $type['class'] ?> is-dismissible">
+          <p>
+            Push7: <?= $_SESSION['p7_'.$type['name']]; ?>
+          </p>
+        </div>
+      <?php
+      unset($_SESSION['p7_'.$type['name']]);
+      return;
     }
   }
 }
