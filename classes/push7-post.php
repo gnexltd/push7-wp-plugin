@@ -13,7 +13,7 @@ class Push7_Post {
     if ($new_status !== 'publish') return;
 
     if (array_key_exists('metabox_exist', $_POST)) {
-      if (isset($_POST['push7_not_notify']) && $_POST['push7_not_notify'] === 'false') {
+      if (isset($_POST['push7_not_notify']) && $_POST['push7_not_notify'] === 'true') {
         $_SESSION['notice_message'] = '右下の「通知を送信しない」のチェックボックスが入っていたため通知は送信されませんでした。';
         return;
       }
