@@ -125,7 +125,7 @@ class Push7_Post {
     global $post;
     ?>
       <input type='hidden' name='metabox_exist' value='true'>
-      <input type='checkbox' name='push7_not_notify' value='true'>
+      <input type='checkbox' name='push7_not_notify' value='true' <?= $post->post_status == 'publish' ? 'checked="checked"' : '' ?>>
       通知を送信しない
     <?php
   }
