@@ -27,7 +27,7 @@ class Push7_Admin_Menu {
       'system' => php_uname(),
       'php_ver' => phpversion(),
       'appno' => get_option('push7_appno'),
-      'sdk_enabled' = get_option('push7_sdk_enabled'),
+      'sdk_enabled' => get_option('push7_sdk_enabled'),
       'update_from_thirdparty' => get_option('push7_update_from_thirdparty')
     );
     return base64_encode(json_encode($data));
