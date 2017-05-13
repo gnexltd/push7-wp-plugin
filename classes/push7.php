@@ -95,8 +95,6 @@ class Push7 {
       if (!is_null(get_option($opt, null))) continue;
       update_option($opt, ($post_type === 'post') ? 'true' : 'false');
     }
-
-    load_plugin_textdomain('push7', null, PUSH7_DIR.'/languages');
   }
 
   public function add_setting_link($links){

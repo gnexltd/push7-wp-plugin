@@ -6,7 +6,7 @@ class Push7_Post {
     add_action('add_meta_boxes', array($this, 'adding_meta_boxes'));
   }
 
-  public function hook_transition_post_status($new_status, $old_status, $postData) {
+  public function hook_transition_post_status($new_status, $old_status, $post_data) {
     global $push7;
     $push7->init();
 
@@ -22,23 +22,23 @@ class Push7_Post {
     }
 
     if ($old_status === 'future') {
-      $future_opt_name = 'push7_future_'.$postData->ID;
+      $future_opt_name = 'push7_future_'.$post_data->ID;
       if (get_option($future_opt_name) === false) return;
       delete_option($future_opt_name);
     }
 
-    if(!self::check_ignored_posttype($postData)){
+    if(!self::check_ignored_posttype($post_data)){
       return;
     }
 
-    if(!self::check_ignored_category($postData)){
+    if(!self::check_ignored_category($post_data)){
       return;
     }
 
-    $this->push($postData);
+    $this->push($post_data);
   }
 
-  public function push($postData) {
+  public function push($post_data) {
     $blogname = get_option(get_option('push7_blog_title', '') === '' ? 'blogname' : 'push7_blog_title');
     $appno = Push7::appno();
     $apikey = Push7::apikey();
@@ -54,9 +54,9 @@ class Push7_Post {
 
     $data = array(
       'title' => $blogname,
-      'body' => $postData->post_title,
+      'body' => $post_data->post_title,
       'icon' => $icon_url,
-      'url' => get_permalink($postData),
+      'url' => get_permalink($post_data),
       'apikey' => $apikey
     );
 
