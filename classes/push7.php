@@ -2,7 +2,7 @@
 
 class Push7 {
   const API_URL = 'https://api.push7.jp/api/v1/';
-  const VERSION = '2.2.4';
+  const VERSION = '2.3.0';
 
   public function __construct() {
     new Push7_Admin_Menu();
