@@ -57,20 +57,20 @@ class Push7 {
   public function init() {
     if (!$this->is_session_started()) session_start();
 
-    $default_check_options = [
+    $default_check_options = array(
       'push7_sslverify_disabled',
       'push7_sdk_enabled',
       'push7_update_from_thirdparty'
-    ];
+    );
 
-    $settings_params = [
+    $settings_params = array(
       'push7_blog_title',
       'push7_appno',
       'push7_apikey',
       'push7_sslverify_disabled',
       'push7_sdk_enabled',
       'push7_update_from_thirdparty'
-    ];
+    );
 
     foreach ($settings_params as $setting) {
       register_setting('push7-settings-group', $setting);
