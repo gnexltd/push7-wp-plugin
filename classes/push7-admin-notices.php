@@ -24,18 +24,9 @@ class Push7_Admin_Notices {
 
   public function message() {
     $types = array(
-      array(
-        'name'  => 'success',
-        'class' => 'notice-success'
-      ),
-      array(
-        'name'  => 'error',
-        'class' => 'error'
-      ),
-      array(
-        'name'  => 'notice',
-        'class' => 'update-nag'
-      )
+      array( 'name'  => 'success', 'class' => 'notice-success' ),
+      array( 'name'  => 'error'  , 'class' => 'error' ),
+      array( 'name'  => 'notice' , 'class' => 'update-nag' )
     );
 
     foreach ($types as $type) {
