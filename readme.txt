@@ -24,6 +24,9 @@ Push7 is now available for Chrome(Android and desktop).
 1. Open the settings menu, input your APPNO and APIKEY.
 
 == Changelog ==
+= 2.4.0 =
+* UserAgentにPHPのバージョンが乗るように
+
 = 2.3.0 =
 * コードベースを大幅にリファクタリング
 * 対応されていないi18nのコードを一旦削除

@@ -2,7 +2,7 @@
 
 class Push7 {
   const API_URL = 'https://api.push7.jp/api/v1/';
-  const VERSION = '2.3.0';
+  const VERSION = '2.4.0';
 
   public function __construct() {
     new Push7_Admin_Menu();
@@ -33,10 +33,11 @@ class Push7 {
   public static function user_agent() {
     global $wp_version;
     return sprintf(
-      "WordPress/%s; %s; Push7:%s",
+      "WordPress/%s; %s; Push7:%s/PHP%s",
       $wp_version,
       get_bloginfo('url'),
-      Push7::VERSION
+      Push7::VERSION,
+      phpversion()
     );
   }
 
