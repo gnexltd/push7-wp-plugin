@@ -21,19 +21,28 @@ svn checkout https://plugins.svn.wordpress.org/push7/
 cd ./push7/
 
 # subversionに現在のタグリリースがある場合に終了
-if [ -d "tags/$CURRENT_VERSION" ]
+if [ -d "./tags/$CURRENT_VERSION" ]
 then
   echo "バージョン $CURRENT_VERSION はすでにリリースされています。"
   exit 0
 fi
 
-# 現状のtrunk削除
+# 現状のtrunkをリポジトリの履歴から削除
 svn remove ./trunk
+# svn removeで削除されない場合を考慮しrmで削除
+rm -rf ./trunk
 cp -r ../push7-publishee ./trunk
 svn add ./trunk
 # タグを作成
 cp -r ../push7-publishee "./tags/$CURRENT_VERSION"
 svn add "./tags/$CURRENT_VERSION"
+
+# svnがパスワードを保存しようとするのを抑制
+cat <<EOS >> ~/.subversion/config
+store-passwords = no
+store-plaintext-passwords = no
+EOS
+
 # コミットする
 svn commit -m "release for $TRAVIS_COMMIT" --username $WP_USER --password $WP_PASSWORD
 
