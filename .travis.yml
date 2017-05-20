@@ -1,7 +1,11 @@
 language: php
 
-php:
-  - 5.3
+matrix:
+  include:
+    - php: '5.3'
+    - php: nightly
+      dist: trusty
+      env: BUILD_DIST=trusty
 
 script:
 - if find . -name "*.php" -exec php -l {} \; | grep "^[Parse error|Fatal error]"; then exit 1; fi;
