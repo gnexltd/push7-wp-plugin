@@ -176,28 +176,6 @@ function show_advances_info() {
           <tr>
             <th>
               <label for="push7_sslverify_disabled">
-                外部エディタのプッシュ通知
-              </label>
-            </th>
-            <td>
-              <fieldset>
-                <label title="true">
-                  <input type="radio" name="push7_update_from_thirdparty" value="true" <?php checked("true", get_option("push7_update_from_thirdparty")); ?>>
-                  する
-                </label>
-                <br>
-                <label title="false">
-                  <input type="radio" name="push7_update_from_thirdparty" value="false" <?php checked("false", get_option("push7_update_from_thirdparty")); ?>>
-                  しない
-                </label>
-              </fieldset>
-              <span>MarsEditなど、外部エディタを利用している場合の挙動についてはこちらをご利用ください。</span>
-            </td>
-          </tr>
-
-          <tr>
-            <th>
-              <label for="push7_sslverify_disabled">
                 デバッグ情報
               </label>
             </th>
