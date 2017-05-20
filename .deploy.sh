@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# trusty環境でのみリリースするように
+if [ "$BUILD_DIST" != "trusty" ]
+then
+  echo "デプロイはtrusty環境で行われます。"
+  exit 0
+fi
+
 # ブランチがmasterではない、もしくはPRであった場合に終了
 if [ "$TRAVIS_BRANCH" != "master" ] || [ "$TRAVIS_PULL_REQUEST" != "false" ]
 then
@@ -27,10 +34,8 @@ then
   exit 0
 fi
 
-# 現状のtrunkをリポジトリの履歴から削除
+# 現状のtrunkを削除
 svn remove ./trunk
-# svn removeで削除されない場合を考慮しrmで削除
-rm -rf ./trunk
 cp -r ../push7-publishee ./trunk
 svn add ./trunk
 # タグを作成
