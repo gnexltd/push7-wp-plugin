@@ -42,14 +42,8 @@ svn add ./trunk
 cp -r ../push7-publishee "./tags/$CURRENT_VERSION"
 svn add "./tags/$CURRENT_VERSION"
 
-# svnがパスワードを保存しようとするのを抑制
-cat <<EOS >> ~/.subversion/config
-store-passwords = no
-store-plaintext-passwords = no
-EOS
-
 # コミットする
-svn commit -m "release for $TRAVIS_COMMIT" --username $WP_USER --password $WP_PASSWORD
+svn commit -m "release for $TRAVIS_COMMIT" --username $WP_USER --password $WP_PASSWORD --no-auth-cache --non-interactive
 
 # svnコミットのステータスをキャッシュ
 code=$?
