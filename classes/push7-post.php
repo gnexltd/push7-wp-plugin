@@ -17,8 +17,6 @@ class Push7_Post {
         $_SESSION['notice_message'] = '右下の「通知を送信しない」のチェックボックスが入っていたため通知は送信されませんでした。';
         return;
       }
-    } elseif(get_option('push7_update_from_thirdparty') == 'false') {
-      return;
     }
 
     if ($old_status === 'future') {

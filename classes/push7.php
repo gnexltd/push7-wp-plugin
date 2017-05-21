@@ -2,7 +2,7 @@
 
 class Push7 {
   const API_URL = 'https://api.push7.jp/api/v1/';
-  const VERSION = '2.4.0';
+  const VERSION = '3.0.0';
 
   public function __construct() {
     new Push7_Admin_Menu();
@@ -60,8 +60,7 @@ class Push7 {
 
     $default_check_options = array(
       'push7_sslverify_disabled',
-      'push7_sdk_enabled',
-      'push7_update_from_thirdparty'
+      'push7_sdk_enabled'
     );
 
     $settings_params = array(
@@ -69,8 +68,7 @@ class Push7 {
       'push7_appno',
       'push7_apikey',
       'push7_sslverify_disabled',
-      'push7_sdk_enabled',
-      'push7_update_from_thirdparty'
+      'push7_sdk_enabled'
     );
 
     foreach ($settings_params as $setting) {
