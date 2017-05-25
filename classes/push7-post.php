@@ -10,6 +10,7 @@ class Push7_Post {
     global $push7;
     $push7->init();
 
+    if (!isset($_POST['metabox_exist'])) return;
     if ($new_status !== 'publish') return;
 
     if (array_key_exists('metabox_exist', $_POST)) {
