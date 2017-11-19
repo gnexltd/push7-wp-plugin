@@ -24,7 +24,7 @@ Push7 is now available for Chrome(Android and desktop).
 1. Open the settings menu, input your APPNO and APIKEY.
 
 == Changelog ==
-= 3.0.2 =
+= 3.0.3 =
 * プッシュ通知の送信が失敗した時にエラーとなる問題を解消
 
 = 3.0.2 =
