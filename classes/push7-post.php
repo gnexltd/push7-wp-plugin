@@ -74,8 +74,6 @@ class Push7_Post {
       )
     );
 
-    $message = json_decode($response['body']);
-
     if (is_wp_error($response)) {
       $_SESSION['p7_error'] = $response->get_error_message();
       return;
@@ -86,6 +84,7 @@ class Push7_Post {
       return;
     }
 
+    $message = json_decode($response['body']);
     $_SESSION['p7_success'] = '通知は正常に配信されました';
   }
 
