@@ -9,7 +9,7 @@ matrix:
 
 script:
 - if find . -name "*.php" -exec php -l {} \; | grep "^[Parse error|Fatal error]"; then exit 1; fi;
-- bash .scripts/version_check.sh
+- bash .scripts/version-check.sh
 
 after_success:
 - bash .scripts/deploy.sh
