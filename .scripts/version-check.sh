@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source "$(realpath $(dirname $BASH_SOURCE))/version-extractor.sh"
+source .scripts/version-extractor.sh
 
 check () {
     local version="$(version_from_readme)"
