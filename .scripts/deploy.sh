@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source "$(realpath $(dirname $BASH_SOURCE))/version-extractor.sh"
+
 # trusty環境でのみリリースするように
 if [ "$BUILD_DIST" != "trusty" ]
 then
@@ -15,7 +17,7 @@ then
 fi
 
 # バージョン取得
-CURRENT_VERSION=$(grep 'Stable tag:' readme.txt | cut -d' ' -f3)
+CURRENT_VERSION=$(version_from_readme)
 # .git削除のためコピー
 cp -r ./ ../push7-publishee
 # 作業する為に移動
