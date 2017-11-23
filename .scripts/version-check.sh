@@ -9,3 +9,16 @@ check () {
 }
 
 check
+status=$?
+
+if [ $status -ne 0 ]
+then
+    cat >&2 <<MESSAGE
+バージョンが統一されていません
+    readme.txt: $(version_from_readme)
+    push7.php: $(version_from_main)
+    classes/push7.php: $(version_from_push7_class)
+MESSAGE
+fi
+
+exit $status

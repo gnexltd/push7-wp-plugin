@@ -8,7 +8,7 @@ matrix:
       env: BUILD_DIST=trusty
 
 script:
-- if find . -name "*.php" -exec php -l {} \; | grep "^[Parse error|Fatal error]"; then exit 1; fi;
+- bash .scripts/syntax-check.sh
 - bash .scripts/version-check.sh
 
 after_success:
