@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source .scripts/ersion-extractor.sh
+source .scripts/version-extractor.sh
 
 # trusty環境でのみリリースするように
 if [ "$BUILD_DIST" != "trusty" ]
