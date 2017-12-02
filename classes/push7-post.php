@@ -185,15 +185,29 @@ class Push7_Post {
     return true;
   }
 
+  /**
+   * get_rpid_dict 投稿ID:Reserved PushのIDの辞書を取得する
+   * @return array 投稿ID:Reserved PushのIDの辞書データとなる連想配列
+   */
+  protected function get_rpid_dict() {
+    return json_decode(get_option("push7_rpid_dict", '{}'), true);
+  }
+
+  /**
+   * get_rpid_from_post_data 投稿データから対象となるReserved PushのIDを引いてくる
+   * @param WP_Post $post 投稿データ
+   * @return mixed 対象ID(string) or 0
+   */
   protected function get_rpid_from_post_data($post) {
     $rpid_dict = $this->get_rpid_dict();
     return isset($rpid_dict[get_post($post)->ID]) ? $rpid_dict[get_post($post)->ID] : 0;
   }
 
-  protected function get_rpid_dict() {
-    return json_decode(get_option("push7_rpid_dict", '{}'), true);
-  }
-
+  /**
+   * set_ripd_dict 投稿ID:Reserved PushのIDの辞書を更新する
+   * @param WP_Post $post 投稿データ
+   * @param mixed $id   Reserved PushのID(string) or null
+   */
   protected function set_ripd_dict($post, $id) {
     $rpid_dict = $this->get_rpid_dict();
     $rpid_dict[get_post($post)->ID] = $id;
