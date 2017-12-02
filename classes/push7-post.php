@@ -10,23 +10,14 @@ class Push7_Post {
     global $push7;
     $push7->init();
 
-    if ($old_status == "future" && $new_status != "publish") {
-      $this->delete_reserved_push($post);
-    }
-
-    if($post->post_status == "auto-draft") return;
-
-    if ($new_status == "publish") {
-      if ($old_status != "future" && !isset($_POST['metabox_exist'])) return;
-      if (isset($_REQUEST['push7_not_notify'])) return;
-      $this->push($post);
-    }
+    if ($old_status == "future" && $new_status != "publish") $this->delete_reserved_push($post);
+    if ($post->post_status == "auto-draft") return;
+    if ($new_status == "publish" && $old_status != "future" && isset($_POST['metabox_exist'])) $this->push($post);
 
     if ($new_status == "future") {
       if (!isset($_POST['metabox_exist'])) return;
-      if (isset($_REQUEST['push7_not_notify'])) return;
       $response = $this->push($post, true);
-      if($response) $this->set_ripd_dict($this->get_post_id($post), $response['pushid']);
+      if ($response) $this->set_ripd_dict($this->get_post_id($post), $response['pushid']);
     }
   }
 
@@ -68,6 +59,7 @@ class Push7_Post {
   }
 
   public function push($post, $is_rp=false) {
+    if (isset($_REQUEST['push7_not_notify'])) return;
 
     if ($is_rp) {
       $rp_id = $this->get_rpid_from_post_data($this->get_post_id($post));
