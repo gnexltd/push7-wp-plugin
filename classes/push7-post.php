@@ -6,38 +6,77 @@ class Push7_Post {
     add_action('add_meta_boxes', array($this, 'adding_meta_boxes'));
   }
 
-  public function hook_transition_post_status($new_status, $old_status, $post_data) {
+  public function hook_transition_post_status($new_status, $old_status, $post) {
     global $push7;
     $push7->init();
 
-    if (!isset($_POST['metabox_exist'])) return;
-    if ($new_status !== 'publish') return;
-
-    if (array_key_exists('metabox_exist', $_POST)) {
-      if (isset($_POST['push7_not_notify']) && $_POST['push7_not_notify'] === 'true') {
-        $_SESSION['notice_message'] = '右下の「通知を送信しない」のチェックボックスが入っていたため通知は送信されませんでした。';
-        return;
-      }
+    if ($old_status == "future" && $new_status != "publish") {
+      $this->delete_reserved_push($post);
     }
 
-    if ($old_status === 'future') {
-      $future_opt_name = 'push7_future_'.$post_data->ID;
-      if (get_option($future_opt_name) === false) return;
-      delete_option($future_opt_name);
+    if($post->post_status == "auto-draft") return;
+
+    if ($new_status == "publish") {
+      if ($old_status != "future" && !isset($_POST['metabox_exist'])) return;
+      $this->push($post);
     }
 
-    if(!self::check_ignored_posttype($post_data)){
-      return;
+    if ($new_status == "future") {
+      $response = $this->push($post);
+      if($response) $this->set_ripd_dict($post, $response['pushid']);
     }
-
-    if(!self::check_ignored_category($post_data)){
-      return;
-    }
-
-    $this->push($post_data);
   }
 
-  public function push($post_data) {
+  protected function delete_reserved_push($post) {
+
+    $rp_id = $this->get_rpid_from_post_data($post);
+    if (!$rp_id) return;
+
+    $data = array(
+      'apikey' => Push7::apikey()
+    );
+
+    $result = wp_remote_request(
+      Push7::API_URL . Push7::appno() . '/reserved_push/delete/' . $rp_id,
+      array(
+        'method' => 'POST',
+        'headers' => array(
+          'Content-Type' => 'application/json',
+          'X-Push7' => 'WordPress Plugin '.Push7::VERSION,
+          'X-Push7-Appno' => Push7::appno()
+        ),
+        'body' => json_encode($data),
+        'user-agent' => Push7::user_agent(),
+        'sslverify' => Push7::sslverify()
+      )
+    );
+
+    if (is_wp_error($response)) {
+      $_SESSION['p7_error'] = $response->get_error_message();
+      return;
+    }
+
+    if (isset($message['error'])) {
+      $_SESSION['p7_error'] = $message['error'];
+      return false;
+    }
+
+    $this->set_ripd_dict($post, null);
+  }
+
+  public function push($post) {
+
+    $rp_id = $this->get_rpid_from_post_data($post);
+    if ($rp_id) return;
+
+    if(!self::check_ignored_posttype($post)){
+      return;
+    }
+
+    if(!self::check_ignored_category($post)){
+      return;
+    }
+
     $blogname = get_option(get_option('push7_blog_title', '') === '' ? 'blogname' : 'push7_blog_title');
     $appno = Push7::appno();
     $apikey = Push7::apikey();
@@ -53,10 +92,11 @@ class Push7_Post {
 
     $data = array(
       'title' => $blogname,
-      'body' => $post_data->post_title,
+      'body' => $post->post_title,
       'icon' => $icon_url,
-      'url' => get_permalink($post_data),
-      'apikey' => $apikey
+      'url' => get_permalink($post),
+      'apikey' => $apikey,
+      'transmission_time' => substr(get_post($post)->post_date, 0, -3)
     );
 
     $response = wp_remote_post(
@@ -79,13 +119,14 @@ class Push7_Post {
       return;
     }
 
-    if (isset($message->error)) {
-      $_SESSION['p7_error'] = $message->error;
-      return;
+    $message = json_decode($response['body'], true);
+
+    if (isset($message['error'])) {
+      $_SESSION['p7_error'] = $message['error'];
+      return false;
     }
 
-    $message = json_decode($response['body']);
-    $_SESSION['p7_success'] = '通知は正常に配信されました';
+    return $message;
   }
 
   public function check_ssl_error($err){
@@ -142,5 +183,20 @@ class Push7_Post {
       }
     }
     return true;
+  }
+
+  protected function get_rpid_from_post_data($post) {
+    $rpid_dict = $this->get_rpid_dict();
+    return isset($rpid_dict[get_post($post)->ID]) ? $rpid_dict[get_post($post)->ID] : 0;
+  }
+
+  protected function get_rpid_dict() {
+    return json_decode(get_option("push7_rpid_dict", '{}'), true);
+  }
+
+  protected function set_ripd_dict($post, $id) {
+    $rpid_dict = $this->get_rpid_dict();
+    $rpid_dict[get_post($post)->ID] = $id;
+    update_option("push7_rpid_dict", json_encode($rpid_dict));
   }
 }
