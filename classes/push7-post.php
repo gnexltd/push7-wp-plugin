@@ -23,7 +23,7 @@ class Push7_Post {
 
     if ($new_status == "future") {
       $response = $this->push($post);
-      if($response) $this->set_ripd_dict($post, $response['pushid']);
+      if($response) $this->set_ripd_dict($this->get_post_id($post), $response['pushid']);
     }
   }
 
@@ -66,14 +66,14 @@ class Push7_Post {
 
   public function push($post) {
 
-    $rp_id = $this->get_rpid_from_post_data($post);
+    $rp_id = $this->get_rpid_from_post_data($this->get_post_id($post));
     if ($rp_id) return;
 
-    if(!self::check_ignored_posttype($post)){
+    if(!self::check_ignored_posttype($this->get_post_id($post))){
       return;
     }
 
-    if(!self::check_ignored_category($post)){
+    if(!self::check_ignored_category($this->get_post_id($post))){
       return;
     }
 
@@ -169,13 +169,12 @@ class Push7_Post {
     <?php
   }
 
-  public function check_ignored_posttype($post){
-    $post_type = get_post_type(get_post($post)->ID);
+  public function check_ignored_posttype($post_id){
+    $post_type = get_post_type($post_id);
     return $post_type == 'post' ?: !(get_option("push7_push_pt_".$post_type, null) === "false");
   }
 
-  public function check_ignored_category($post){
-    $post = get_post($post);
+  public function check_ignored_category($post_id){
     $categories = get_the_category($post->ID);
     foreach ($categories as $category) {
       if(get_option("push7_push_ctg_".$category->slug, null) === "false"){
@@ -195,22 +194,31 @@ class Push7_Post {
 
   /**
    * get_rpid_from_post_data 投稿データから対象となるReserved PushのIDを引いてくる
-   * @param WP_Post $post 投稿データ
+   * @param int $post_id 投稿ID
    * @return mixed 対象ID(string) or 0
    */
-  protected function get_rpid_from_post_data($post) {
+  protected function get_rpid_from_post_data($post_id) {
     $rpid_dict = $this->get_rpid_dict();
-    return isset($rpid_dict[get_post($post)->ID]) ? $rpid_dict[get_post($post)->ID] : 0;
+    return isset($rpid_dict[$post_id]) ? $rpid_dict[$post_id] : 0;
   }
 
   /**
    * set_ripd_dict 投稿ID:Reserved PushのIDの辞書を更新する
-   * @param WP_Post $post 投稿データ
+   * @param int $post_id 投稿ID
    * @param mixed $id   Reserved PushのID(string) or null
    */
-  protected function set_ripd_dict($post, $id) {
+  protected function set_ripd_dict($post_id, $id) {
     $rpid_dict = $this->get_rpid_dict();
-    $rpid_dict[get_post($post)->ID] = $id;
+    $rpid_dict[$post_id] = $id;
     update_option("push7_rpid_dict", json_encode($rpid_dict));
+  }
+
+  /**
+   * get_post_id WP_Postオブジェクトから対象のIDを引いてくる
+   * @param WP_Post $post 投稿データ
+   * @return int       投稿ID
+   */
+  protected function get_post_id ($post) {
+    return get_post($post)->ID;
   }
 }
