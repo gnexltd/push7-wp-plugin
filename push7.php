@@ -13,6 +13,7 @@ Text Domain: push7
 
 require_once 'classes/push7.php';
 require_once 'classes/push7-admin-notices.php';
+require_once 'classes/push7-admin-queuing.php';
 require_once 'classes/push7-admin-menu.php';
 require_once 'classes/push7-post.php';
 require_once 'classes/push7-sdk.php';

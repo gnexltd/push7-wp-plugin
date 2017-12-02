@@ -7,6 +7,7 @@ class Push7 {
   public function __construct() {
     new Push7_Admin_Menu();
     new Push7_Admin_Notices();
+    new Push7_Admin_Queuing();
     new Push7_Post();
     new Push7_Sdk();
 
