@@ -18,11 +18,14 @@ class Push7_Post {
 
     if ($new_status == "publish") {
       if ($old_status != "future" && !isset($_POST['metabox_exist'])) return;
+      if (isset($_REQUEST['push7_not_notify'])) return;
       $this->push($post);
     }
 
     if ($new_status == "future") {
-      $response = $this->push($post);
+      if (!isset($_POST['metabox_exist'])) return;
+      if (isset($_REQUEST['push7_not_notify'])) return;
+      $response = $this->push($post, true);
       if($response) $this->set_ripd_dict($this->get_post_id($post), $response['pushid']);
     }
   }
@@ -64,10 +67,12 @@ class Push7_Post {
     $this->set_ripd_dict($post, null);
   }
 
-  public function push($post) {
+  public function push($post, $is_rp=false) {
 
-    $rp_id = $this->get_rpid_from_post_data($this->get_post_id($post));
-    if ($rp_id) return;
+    if ($is_rp) {
+      $rp_id = $this->get_rpid_from_post_data($this->get_post_id($post));
+      if ($rp_id) return;
+    }
 
     if(!self::check_ignored_posttype($this->get_post_id($post))){
       return;
