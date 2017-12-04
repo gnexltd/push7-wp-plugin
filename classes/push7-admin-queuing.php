@@ -13,6 +13,9 @@ class Push7_Admin_Queuing {
    * @return [type] [description]
    */
   public static function update_queue() {
+    $semaphore = Push7_Semaphore::factory();
+    $semaphore->init();
+    if(!$semaphore->lock()) return;
     $queue = self::get_queue();
     foreach ($queue as $post_id) {
       $post = get_post($post_id);
@@ -25,6 +28,7 @@ class Push7_Admin_Queuing {
         }
       }
     }
+    $semaphore->unlock();
   }
 
   public function register_scheduler() {
