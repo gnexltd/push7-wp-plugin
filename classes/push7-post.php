@@ -13,8 +13,10 @@ class Push7_Post {
     global $push7;
     $push7->init();
 
-    if ($old_status == "future" && $new_status != "publish") Push7_Admin_Queuing::delete_queue(self::get_post_id($post));
-    if ($old_status == "future" && $new_status != "publish") $this->delete_reserved_push($post);
+    if ($old_status == "future" && $new_status != "publish") {
+      Push7_Admin_Queuing::delete_queue(self::get_post_id($post));
+      $this->delete_reserved_push($post);
+    }
     if ($post->post_status == "auto-draft") return;
     if ($new_status == "publish" && $old_status != "future" && isset($_POST['metabox_exist'])) self::push($post);
 
