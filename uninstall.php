@@ -16,3 +16,5 @@ foreach ($post_types as $post_type) {
   $opt = "push7_push_pt_".$post_type;
   delete_option($opt);
 }
+
+wp_clear_scheduled_hook('push7_queue_cron');

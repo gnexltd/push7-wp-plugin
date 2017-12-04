@@ -2,14 +2,17 @@
 
 class Push7_Admin_Queuing {
   public function __construct() {
-    add_action('admin_menu', array($this, 'on_init'));
+    add_action('admin_init', array($this, 'register_scheduler'));
+
+    // 環境によってはcronが正しく動作しない場合もあるようなので管理画面では常に叩いておく
+    add_action('admin_init', array($this, 'update_queue'));
   }
 
   /**
    * on_init メイン処理
    * @return [type] [description]
    */
-  public function on_init() {
+  public static function update_queue() {
     $queue = self::get_queue();
     foreach ($queue as $post_id) {
       $post = get_post($post_id);
@@ -22,6 +25,11 @@ class Push7_Admin_Queuing {
         }
       }
     }
+  }
+
+  public function register_scheduler() {
+    if (wp_next_scheduled('push7_queue_cron')) return; // すでにスケジューリングが登録されている場合は登録しない
+    wp_schedule_event(time(), 'hourly', 'push7_queue_cron');
   }
 
   /**
@@ -61,5 +69,13 @@ class Push7_Admin_Queuing {
    */
   public static function save_queue($queue) {
     update_option("push7_rp_queue", json_encode($queue));
+  }
+}
+
+function push7_queue_cron() {
+  try {
+    Push7_Admin_Queuing::update_queue();
+  } catch (Exception $e) {
+    // ユーザーが閲覧する層に対しては失敗時も動作するように進める。
   }
 }
