@@ -3,6 +3,7 @@
 class Push7 {
   const API_URL = 'https://api.push7.jp/api/v1/';
   const VERSION = '3.0.3';
+  const RESERVED_LINE = 1123200; // 13 days (86,400 * 13)
 
   public function __construct() {
     new Push7_Admin_Menu();

@@ -1,6 +1,9 @@
 <?php
 
 class Push7_Post {
+
+  private $ONE_DAY = 86400;
+
   public function __construct() {
     add_action('transition_post_status', array($this, 'hook_transition_post_status'), 10, 3);
     add_action('add_meta_boxes', array($this, 'adding_meta_boxes'));
@@ -10,23 +13,40 @@ class Push7_Post {
     global $push7;
     $push7->init();
 
+    if ($old_status == "future" && $new_status != "publish") Push7_Admin_Queuing::delete_queue(self::get_post_id($post));
     if ($old_status == "future" && $new_status != "publish") $this->delete_reserved_push($post);
     if ($post->post_status == "auto-draft") return;
-    if ($new_status == "publish" && $old_status != "future" && isset($_POST['metabox_exist'])) $this->push($post);
+    if ($new_status == "publish" && $old_status != "future" && isset($_POST['metabox_exist'])) self::push($post);
 
     if ($new_status == "future") {
       if (!isset($_POST['metabox_exist'])) return;
-      $response = $this->push($post, true);
-      if ($response) $this->set_ripd_dict($this->get_post_id($post), $response['pushid']);
+      $this->doActionFuturePost($post);
+    }
+  }
+
+  /**
+   * doActionFuturePost 予約投稿周りの処理を受け持つ
+   * @param  WP_Post $post 投稿データ
+   * @return void
+   */
+  protected function doActionFuturePost($post) {
+
+    // 予約投稿日時が13日より先の場合
+    if ( (strtotime(get_post($post)->post_date) - strtotime(current_time('Y-m-d H:i:s'))) > Push7::RESERVED_LINE ) {
+      Push7_Admin_Queuing::add_queue(self::get_post_id($post));
+    } else {
+      // 通常の予約投稿
+      $response = self::push($post, true);
+      if ($response) self::set_ripd_dict(self::get_post_id($post), $response['pushid']);
     }
   }
 
   protected function delete_reserved_push($post) {
 
-    $rp_id = $this->get_rpid_from_post_data($post);
+    $rp_id = self::get_rpid_from_post_data($post);
     if (!$rp_id) return;
 
-    $data = array(
+    $payload = array(
       'apikey' => Push7::apikey()
     );
 
@@ -39,7 +59,7 @@ class Push7_Post {
           'X-Push7' => 'WordPress Plugin '.Push7::VERSION,
           'X-Push7-Appno' => Push7::appno()
         ),
-        'body' => json_encode($data),
+        'body' => json_encode($payload),
         'user-agent' => Push7::user_agent(),
         'sslverify' => Push7::sslverify()
       )
@@ -55,30 +75,35 @@ class Push7_Post {
       return false;
     }
 
-    $this->set_ripd_dict($post, null);
+    self::set_ripd_dict($post, null);
   }
 
-  public function push($post, $is_rp=false) {
-    if (isset($_REQUEST['push7_not_notify'])) return;
-
-    if ($is_rp) {
-      $rp_id = $this->get_rpid_from_post_data($this->get_post_id($post));
-      if ($rp_id) return;
-    }
-
-    if(!self::check_ignored_posttype($this->get_post_id($post))){
+  public static function push($post, $is_rp=false) {
+    if (isset($_REQUEST['push7_not_notify'])) {
       return;
     }
 
-    if(!self::check_ignored_category($this->get_post_id($post))){
+    if ($is_rp) {
+      $rp_id = self::get_rpid_from_post_data(self::get_post_id($post));
+      if ($rp_id) return;
+    }
+
+    if(!self::check_ignored_posttype(self::get_post_id($post))){
+      return;
+    }
+
+    if(!self::check_ignored_category(self::get_post_id($post))){
       return;
     }
 
     $blogname = get_option(get_option('push7_blog_title', '') === '' ? 'blogname' : 'push7_blog_title');
     $appno = Push7::appno();
     $apikey = Push7::apikey();
+
     if( empty($appno) || empty($apikey) ) return;
+
     $app_head_response = self::get_app_head($appno);
+
     if (is_wp_error($app_head_response)) {
       self::check_ssl_error( $app_head_response->get_error_message() );
       return;
@@ -87,7 +112,7 @@ class Push7_Post {
     $app_head = json_decode($app_head_response['body']);
     $icon_url = $app_head->icon;
 
-    $data = array(
+    $payload = array(
       'title' => $blogname,
       'body' => $post->post_title,
       'icon' => $icon_url,
@@ -105,7 +130,7 @@ class Push7_Post {
           'X-Push7' => 'WordPress Plugin '.Push7::VERSION,
           'X-Push7-Appno' => Push7::appno()
         ),
-        'body' => json_encode($data),
+        'body' => json_encode($payload),
         'user-agent' => Push7::user_agent(),
         'sslverify' => Push7::sslverify()
       )
@@ -185,7 +210,7 @@ class Push7_Post {
    * get_rpid_dict 投稿ID:Reserved PushのIDの辞書を取得する
    * @return array 投稿ID:Reserved PushのIDの辞書データとなる連想配列
    */
-  protected function get_rpid_dict() {
+  public static function get_rpid_dict() {
     return json_decode(get_option("push7_rpid_dict", '{}'), true);
   }
 
@@ -194,8 +219,8 @@ class Push7_Post {
    * @param int $post_id 投稿ID
    * @return mixed 対象ID(string) or 0
    */
-  protected function get_rpid_from_post_data($post_id) {
-    $rpid_dict = $this->get_rpid_dict();
+  public static function get_rpid_from_post_data($post_id) {
+    $rpid_dict = self::get_rpid_dict();
     return isset($rpid_dict[$post_id]) ? $rpid_dict[$post_id] : 0;
   }
 
@@ -204,8 +229,8 @@ class Push7_Post {
    * @param int $post_id 投稿ID
    * @param mixed $id   Reserved PushのID(string) or null
    */
-  protected function set_ripd_dict($post_id, $id) {
-    $rpid_dict = $this->get_rpid_dict();
+  public static function set_ripd_dict($post_id, $id) {
+    $rpid_dict = self::get_rpid_dict();
     $rpid_dict[$post_id] = $id;
     update_option("push7_rpid_dict", json_encode($rpid_dict));
   }
@@ -215,7 +240,7 @@ class Push7_Post {
    * @param WP_Post $post 投稿データ
    * @return int       投稿ID
    */
-  protected function get_post_id ($post) {
+  public static function get_post_id ($post) {
     return get_post($post)->ID;
   }
 }
