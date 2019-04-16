@@ -20,12 +20,6 @@ class Push7_Post {
       }
     }
 
-    if ($old_status === 'future') {
-      $future_opt_name = 'push7_future_'.$post_data->ID;
-      if (get_option($future_opt_name) === false) return;
-      delete_option($future_opt_name);
-    }
-
     if(!self::check_ignored_posttype($post_data)){
       return;
     }
