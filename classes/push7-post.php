@@ -22,7 +22,6 @@ class Push7_Post {
   }
 
   protected function delete_reserved_push($post) {
-
     $rp_id = $this->get_rpid_from_post_data($post);
     if (!$rp_id) return;
 
@@ -92,9 +91,12 @@ class Push7_Post {
       'body' => $post->post_title,
       'icon' => $icon_url,
       'url' => get_permalink($post),
-      'apikey' => $apikey,
-      'transmission_time' => substr(get_post($post)->post_date, 0, -3)
+      'apikey' => $apikey
     );
+
+    // push7の予約投稿は分粒度での配信しかできないため、1分追加しないと記事公開前にpushが配送される可能性が高い.
+    $after_1_minute = date("Y-m-d H:i", strtotime(get_post($post)->post_date.'+1 minute'));
+    if ($is_rp) $data['transmission_time'] = substr($after_1_minute, 0, -3);
 
     $response = wp_remote_post(
       Push7::API_URL . $appno.'/send',
