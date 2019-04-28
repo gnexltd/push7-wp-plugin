@@ -95,8 +95,7 @@ class Push7_Post {
     );
 
     // push7の予約投稿は分粒度での配信しかできないため、1分追加しないと記事公開前にpushが配送される可能性が高い.
-    $after_1_minute = date("Y-m-d H:i", strtotime(get_post($post)->post_date.'+1 minute'));
-    if ($is_rp) $data['transmission_time'] = substr($after_1_minute, 0, -3);
+    if ($is_rp) $data['transmission_time'] = date("Y-m-d H:i", strtotime(get_post($post)->post_date.'+1 minute'));
 
     $response = wp_remote_post(
       Push7::API_URL . $appno.'/send',
