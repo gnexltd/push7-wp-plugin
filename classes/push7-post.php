@@ -65,13 +65,12 @@ class Push7_Post {
       if ($rp_id) return;
     }
 
-    if(!self::check_ignored_posttype($this->get_post_id($post))){
-      return;
-    }
+    $post_type = get_post_type($post_id);
+    $post_id = $this->get_post_id($post);
 
-    if(!self::check_ignored_category($this->get_post_id($post))){
-      return;
-    }
+    if ($this->check_ignored_posttype($post_id)) return;
+    // 通常投稿の場合のみカテゴリチェックを行う
+    if ($post_type === 'post' && $this->check_ignored_category($post_id)) return;
 
     $blogname = get_option(get_option('push7_blog_title', '') === '' ? 'blogname' : 'push7_blog_title');
     $appno = Push7::appno();
@@ -169,17 +168,17 @@ class Push7_Post {
 
   public function check_ignored_posttype($post_id){
     $post_type = get_post_type($post_id);
-    return $post_type == 'post' ?: !(get_option("push7_push_pt_".$post_type, null) === "false");
+    $setting = get_option("push7_push_pt_".$post_type, null);
+    // TODO: 何故かsettings.phpでcheckboxを外して保存した場合, 'false'ではなく空文字が設定されることがあるため以下のような検証を行っている
+    return $setting === 'false' || $setting === '';
   }
 
   public function check_ignored_category($post_id){
     $categories = get_the_category($post->ID);
     foreach ($categories as $category) {
-      if(get_option("push7_push_ctg_".$category->slug, null) === "false"){
-        return false;
-      }
+      if (get_option('push7_push_ctg_'.$category->slug, null) === 'false') return true;
     }
-    return true;
+    return false;
   }
 
   /**
