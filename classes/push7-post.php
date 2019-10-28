@@ -60,16 +60,17 @@ class Push7_Post {
   public function push($post, $is_rp=false) {
     if (isset($_REQUEST['push7_not_notify'])) return;
 
+    $post_id = $this->get_post_id($post);
+
     if ($is_rp) {
-      $rp_id = $this->get_rpid_from_post_data($this->get_post_id($post));
+      $rp_id = $this->get_rpid_from_post_data($post_id);
       if ($rp_id) return;
     }
 
     $post_type = get_post_type($post_id);
-    $post_id = $this->get_post_id($post);
 
     if ($this->check_ignored_posttype($post_id)) return;
-    // 通常投稿の場合のみカテゴリチェックを行う
+    // 通常投稿の場合のみカテゴリが存在するので、チェックを行う
     if ($post_type === 'post' && $this->check_ignored_category($post_id)) return;
 
     $blogname = get_option(get_option('push7_blog_title', '') === '' ? 'blogname' : 'push7_blog_title');
