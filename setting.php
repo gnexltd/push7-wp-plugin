@@ -110,7 +110,7 @@ function show_advances_info() {
 
 
     <?php
-      if(count(Push7::post_types()) >= 2){
+      if (count(Push7::post_types()) >= 2) {
     ?>
         <h2 class="title">投稿タイプ毎のプッシュ通知設定</h2>
         <table class="form-table">
@@ -120,12 +120,11 @@ function show_advances_info() {
               <td>
               <?php
                 foreach (Push7::post_types() as $post_type) {
-                  if($post_type == "post") continue;
                   $name = "push7_push_pt_".$post_type;
               ?>
                   <label for="<?= $name; ?>">
                     <input type="checkbox" name="<?= $name;?>" value="true" <?php checked("true", get_option($name)) ?>>
-                    <?= $post_type == 'post' ? 'post(通常の投稿)' : $post_type; ?>
+                    <?= $post_type === 'post' ? 'post(通常の投稿)' : $post_type; ?>
                   </label>
                   <br>
               <?php
