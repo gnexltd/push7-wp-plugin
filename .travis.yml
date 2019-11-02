@@ -3,6 +3,9 @@ language: php
 matrix:
   include:
     - php: '5.5.38'
+      dist: trusty
+      env: BUILD_DIST=trusty
+
     - php: nightly
       dist: trusty
       env: BUILD_DIST=trusty
