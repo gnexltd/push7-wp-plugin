@@ -91,7 +91,8 @@ class Push7_Post {
       'body' => $post->post_title,
       'icon' => $icon_url,
       'url' => get_permalink($post),
-      'apikey' => $apikey
+      'apikey' => $apikey,
+      'transmission_time' => date("Y-m-d H:i")
     );
 
     // push7の予約投稿は分粒度での配信しかできないため、1分追加しないと記事公開前にpushが配送される可能性が高い.
