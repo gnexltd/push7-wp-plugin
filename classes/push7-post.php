@@ -169,9 +169,8 @@ class Push7_Post {
 
   public function check_ignored_posttype($post_id){
     $post_type = get_post_type($post_id);
-    $setting = get_option("push7_push_pt_".$post_type, null);
-    // TODO: 何故かsettings.phpでcheckboxを外して保存した場合, 'false'ではなく空文字が設定されることがあるため以下のような検証を行っている
-    return $setting === 'false' || $setting === '';
+    $setting = get_option("push7_push_pt_".$post_type, '');
+    return $setting === '';
   }
 
   public function check_ignored_category($post_id){
