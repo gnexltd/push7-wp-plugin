@@ -23,7 +23,7 @@ function show_advances_info() {
           </th>
           <td>
             <?php
-              if (get_option('blog_title')) {
+              if (get_option('push7_blog_title')) {
             ?>
                 <input type="text" id="push7_blog_title" class="regular-text" name="push7_blog_title" value="<?= esc_attr( get_option( 'push7_blog_title' ) ); ?>">
             <?php
