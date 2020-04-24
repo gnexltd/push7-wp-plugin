@@ -96,26 +96,38 @@ class Push7 {
      *  - ''(空文字): 通知を送信しない場合（チェックボックスにチェックが入っていない）
      *  - 'false': 過去に空文字と同じ意味合いで使われていた値
      */
-    foreach (Push7::post_types() as $post_type) {
-      $opt = "push7_push_pt_".$post_type;
-      register_setting('push7-settings-group', $opt);
+    if(count(Push7::post_types()) >= 2) {
+      // カスタム投稿タイプの設定が表示されている場合
+      foreach (Push7::post_types() as $post_type) {
+        $opt = "push7_push_pt_".$post_type;
+        register_setting('push7-settings-group', $opt);
 
-      // 記事のデフォルトは 'true', それ以外の投稿タイプのデフォルトは空文字(通知を送信しない)
-      $default_value = $post_type === 'post' ? 'true' : '';
-      $opt_value = get_option($opt);
+        // 記事のデフォルトは 'true', それ以外の投稿タイプのデフォルトは空文字(通知を送信しない)
+        $default_value = $post_type === 'post' ? 'true' : '';
+        $opt_value = get_option($opt, $default_value);
 
-      // true もしくは ''(空文字) が想定される値
-      if($opt_value === 'true' || $opt_value === '') continue;
+        // true もしくは ''(空文字) が想定される値
+        if($opt_value === 'true' || $opt_value === '') continue;
 
-      /* 後方互換性の維持コード */
-      if($opt_value === 'false') {
-        // 過去に空文字ではなく false が設定されていたことがあるので, 空文字に置き換える
-        update_option($opt, '');
-        continue;
+        /* 後方互換性の維持コード */
+        if($opt_value === 'false') {
+          // 過去に空文字ではなく false が設定されていたことがあるので, 空文字に置き換える
+          update_option($opt, '');
+          continue;
+        }
+
+        // その他の予期しない値が入っている, もしくは値が設定されていない場合, デフォルト値を設定する
+        update_option($opt, $default_value);
       }
-
-      // その他の予期しない値が入っている, もしくは値が設定されていない場合, デフォルト値を設定する
-      update_option($opt, $default_value);
+    } else {
+      // カスタム投稿タイプ設定が表示されていない場合 -> postはPush通知を送信する
+      $opt = 'push7_push_pt_post';
+      $default_value = 'true';
+      $opt_value = get_option($opt);
+      if($opt_value !== $default_value) {
+        // optionに既にデフォルト値が入っていない場合, 自動的にデフォルト値を書き込む
+        update_option($opt, $default_value);
+      }
     }
   }
 
