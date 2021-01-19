@@ -129,6 +129,8 @@ class Push7 {
         update_option($opt, $default_value);
       }
     }
+
+    session_write_close();
   }
 
   public function add_setting_link($links){
